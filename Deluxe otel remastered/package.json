@@ -1,0 +1,19 @@
+{
+  "name": "deluxe-otel-remastered",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "video.js": "^7.20.2"
+  },
+  "dependencies": {
+    "@ividjs/ivid": "^1.0.7",
+    "lightgallery": "^2.6.1"
+  }
+}

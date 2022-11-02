@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+        integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/main.min.css">
+    <link rel="stylesheet" href="css/mediabox.min.css">
+    <link href="https://kit pro.fontawesome.com/releases/v5.15.4/css/pro.min.css " rel="stylesheet">
+    <title>Deluxe Otel</title>
+</head>
+
+<body>
+    <header id="home" class="main-header room">
+        <div id="main-nav" class="">
+            <nav class="navbar bg-dark ">
+                <div class="navbar__brand">
+                    <a href="index.html">
+                        <img src="img/logo.png">
+                    </a>
+                </div>
+                <ul class="navbar__items">
+                    <li><a href="index.html" class="navbar__item">ANASAYFA</a></li>
+                    <li><a href="about.html" class="navbar__item">HAKKIMIZDA</a></li>
+                    <li><a href="room.html" class="navbar__item">ODALARIMIZ</a></li>
+                    <li><a href="galery.html" class="navbar__item">Resim Galerisi</a></li>
+                    <li><a href="activite.html" class="navbar__item">Aktiviteler</a></li>
+                    <li><a href="s-s-s.html" class="navbar__item">S.S.S</a></li>
+                    <li><a href="contact.html" class="active navbar__item">İLETİŞİM</a></li>
+                    <li><a href="#" class="navbar__item" onclick="DisplayMenu()"><i class="fa fa-bars fa-2x"></i></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="map-root">
+                <h1 class="section-title left">Bize Ulaşın</h1>
+                <div class="border">~</div>
+                <h4>Osmaniye mh. Cemiyet sk. No:30/2 Bakırköy/İSTANBUL1</h4>
+                <p>
+                    <i class="fa fa-phone"></i> 0 531 833 36 63
+                    <br>
+                    <i class="bi bi-envelope-fill"></i> keremsoyak2002@gmail.com
+                </p>
+                <div class="map-container">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3011.297419914384!2d28.8840053150677!3d40.99686297930185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!3m2!1str!2str!4v1498148006202"
+                        width="100%" height="100%" frameborder="0"></iframe>
+                </div>
+
+            </div>
+            <div class="contact-form">
+                <h1 class="section-title left">Mesaj Gönderin</h1>
+                <div class="border">~</div>
+                <form class="info-form">
+                    <label for="adsoyad">Ad Soyad</label>
+                    <input type="text" name="" id="adsoyad">
+
+                    <label for="email">E-posta Adresi</label>
+                    <input type="text" name="" id="email">
+
+                    <label for="konu">Konu</label>
+                    <input type="text" name="" id="konu">
+
+                    <label for="message">Mesajınız</label>
+                    <textarea style="height: 120px;" name="" id="message"></textarea>
+                    <button type="submit" class="btn-warning">Gönder</button>
+                </form>
+
+
+            </div>
+        </div>
+        </div>
+    </main>
+
+    <footer id="main-footer">
+        <div class="footer-content container">
+            <div class="links">
+                <strong>Bağlantılar</strong>
+                <a href="index.html" class="link">ANASAYFA</a>
+                <a href="about.html" class="link">HAKKIMIZDA</a>
+                <a href="room.html" class="link">ODALAR</a>
+                <a href="galery.html" class="link">RESİM GALERİSİ</a>
+                <a href="activite.html" class="link">AKTİVİTELER</a>
+                <a href="s-s-s.html" class="link">S.S.S</a>
+                <a href="contact.html" class="link">İLETİŞİM</a>
+            </div>
+            <div class="links">
+                <strong>Bize Ulaşın</strong>
+                <p>Osmaniye mh. Cemiyet sk. No:30/2 Bakırköy/İSTANBUL</p>
+                <p>
+                    <i class="fa fa-phone"></i> 0 531 833 36 63
+                </p>
+                <p>
+                    <i class="bi bi-envelope-fill"></i> keremsoyak2002@gmail.com
+                </p>
+                <div class="social">
+                    <a href="https://www.instagram.com/aidenvanya/" target="_blank"><i
+                            class="fa-brands fa-instagram"></i></a>
+                    <a href="https://twitter.com/AidenVanya"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="https://www.youtube.com/channel/UC07tvs-rgr0u7v9B-IA-7tg"><i
+                            class="fa-brands fa-youtube"></i></a>
+                    <a href="https://www.facebook.com/kerem.soyak.98/"><i class="fa-brands fa-facebook"></i></a>
+                </div>
+            </div>
+            <div class="links">
+                <strong>Aktiviteler ve Hizmetlerimiz</strong>
+                <a href="#" class="link full">Oda Servisimiz İle Her Anı Ayrıcalıklı Hissedin.</a>
+                <a href="#" class="link full">Hamam Sauna ve Spa Hizmetlerimiz.</a>
+                <a href="#" class="link full">Unutulmaz romantik bir balayı hayaliniz mi var?</a>
+                <a href="#" class="link full">Otelimizde Eğlenceli Zaman Geçirin.</a>
+                <a href="#" class="link full">Toplantı, Seminer, Kutlama Organizasyonları.</a>
+            </div>
+            <div class="links">
+                Deluxe Hotel Tüm Hakları Saklıdır &copy; 2022-
+                <a href="#" style="color: red;">unyeweb</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="js/mediabox.min.js"></script>
+    <script>MediaBox('.mediabox');</script>
+    <script src="js/toggle-menu.js"></script>
+</body>
+
+</html>

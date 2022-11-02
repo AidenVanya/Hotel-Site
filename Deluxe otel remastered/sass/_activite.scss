@@ -1,0 +1,11 @@
+.main-header.activite {
+    background: #fff;
+    height: auto;
+    .navbar {
+        opacity: 1;
+        position: sticky;
+    }
+}
+.main-header.activite::before {
+    position: relative;
+}

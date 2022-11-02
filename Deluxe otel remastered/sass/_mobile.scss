@@ -1,0 +1,196 @@
+@media screen and (max-width: 575.98px) {
+    // index
+    #home {
+        .content {
+            h1 {
+                font-size: 2.5rem !important;
+            }
+            p {
+                font-size: 1.5rem !important;
+            }
+        }
+    }
+    #main-content {
+        #home__b {
+            .activities {
+                padding-left: 0;
+                padding-right: 0;
+                text-align: center;
+                display: grid;
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+    }
+    #main-footer {
+        .footer-content {
+            grid-template-columns: repeat(1, 1fr) !important;
+            .links:last-child {
+                grid-column: 1 / span 1 !important;
+            }
+        }
+    }
+    // galery
+    #galery-content {
+        .galery-content {
+            .picture-gallery {
+                grid-template-columns: repeat(1, 1fr) !important;
+            }
+        }
+    }
+    // contact
+    .main-content .container {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+@media screen and (max-width: 767.98px) {
+    // index
+    #home {
+        #main-nav {
+            .navbar {
+                flex-direction: row !important;
+                &__brand {
+                    align-self: flex-start;
+                }
+                &__items li {
+                    display: none;
+
+                    &:last-child {
+                        display: block;
+                        align-self: flex-end;
+                        background: none;
+                    }
+                }
+            }
+        }
+        #main-nav.mobile {
+            .navbar {
+                position: relative;
+                left: 0;
+                top: 0;
+                height: auto;
+                overflow: hidden;
+                line-height: 30px;
+                text-align: left;
+                display: block;
+                &__items {
+                    flex-direction: column;
+                }
+                &__items li {
+                    display: block;
+                    &:last-child {
+                        position: absolute;
+                        right: 40px;
+                        top: 8px;
+                    }
+                }
+            }
+        }
+    }
+    #home.mobile {
+        .content {
+            display: none;
+        }
+    }
+
+    #main-content {
+        #home__a {
+            .rooms {
+                grid-template-columns: repeat(1, 1fr);
+                .room {
+                    margin-bottom: 2rem;
+                    height: auto;
+                }
+            }
+        }
+        #home__c {
+            .videos {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+    }
+
+    #main-footer {
+        .footer-content {
+            grid-template-columns: repeat(1, 1fr) !important;
+            .links:last-child {
+                grid-column: 1 / span 1 !important;
+            }
+        }
+    }
+    // contact
+    .main-content .container {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+@media screen and (max-width: 991.98px) {
+    // index
+    #home {
+        #main-nav {
+            .navbar {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                padding-top: 1rem;
+
+                .navbar__items a {
+                    padding: 1rem 1rem;
+                }
+            }
+        }
+        .content {
+            h1 {
+                font-size: 3.5rem;
+            }
+            p {
+                font-size: 1.7rem;
+            }
+        }
+    }
+    // about
+    #about-content.container {
+        grid-template-columns: repeat(1, 1fr);
+
+        .sidebar {
+            display: none;
+        }
+        .about-content {
+            h1 {
+                text-align: center;
+            }
+            text-align: center;
+        }
+    }
+    // room
+    #room-content.container {
+        grid-template-columns: repeat(1, 1fr);
+        .sidebar {
+            display: none;
+        }
+        .room-content {
+            text-align: center;
+            .title {
+                text-align: center;
+            }
+            .room-gallery {
+                grid-template-columns: repeat(1, 1fr);
+                .gallery {
+                    .text-bottom {
+                        .main-bottom {
+                            display: block;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    // galery
+    #galery-content {
+        .galery-content {
+            .picture-gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    }
+}

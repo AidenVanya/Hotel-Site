@@ -1,0 +1,25 @@
+.main-header.galery {
+    background: #fff;
+    height: auto;
+    .navbar {
+        opacity: 1;
+        position: sticky;
+    }
+}
+.main-header.galery::before {
+    position: relative;
+}
+#galery-content {
+    display: block;
+    text-align: center;
+
+    .galery-content {
+        padding: 3rem;
+        background-image: linear-gradient(120deg, #fdfbfb 0%, #d3dadd 100%);
+        .picture-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+    }
+}

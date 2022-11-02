@@ -1,0 +1,107 @@
+.main-header.room {
+    background: #fff;
+    height: auto;
+    .navbar {
+        opacity: 1;
+        position: sticky;
+    }
+}
+.main-header.room::before {
+    position: relative;
+}
+#room-content {
+    display: grid;
+    grid-template-columns: 2fr 5fr;
+    width: 100%;
+
+    .sidebar {
+        padding: 3rem 1.5rem;
+
+        background: linear-gradient(to right, #4286f4, #373b44);
+        min-height: 700px;
+        .title {
+            font-size: 2.1rem;
+            padding: 15px;
+            padding-top: 0px;
+            color: #111;
+            text-align: left;
+            padding-left: 0px;
+        }
+        .room-form label,
+        .room-form input,
+        .room-form select {
+            display: block;
+            width: 100%;
+            margin-top: 1rem;
+            padding: 1rem;
+            font-size: 1.8rem;
+        }
+    }
+    .room-content {
+        padding: 3rem;
+        background-image: linear-gradient(120deg, #fdfbfb 0%, #d3dadd 100%);
+
+        .title {
+            font-size: 2.1rem;
+            padding: 15px;
+            padding-top: 0px;
+            color: #111;
+            text-align: left;
+            padding-left: 0px;
+        }
+        .explanation {
+            font-weight: 300;
+        }
+        .room-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            .gallery {
+                .room-type {
+                    color: #a29061;
+                    padding: 1.5rem;
+                    padding-left: 0;
+                    padding-right: 0;
+                    padding-bottom: 1rem !important;
+                    padding-top: 1rem !important;
+                    font-weight: 700;
+                    span {
+                        color: #666666;
+                        font-weight: 300;
+                    }
+                }
+                .thumbnail {
+                    img {
+                        width: 100%;
+                        padding-top: 1rem;
+                    }
+                }
+                .text-bottom {
+                    background: #fff;
+                    padding: 15px;
+                    border: 1px solid #e2e2e2;
+                    border-top: 0px;
+                    box-shadow: inset 0px 5px 15px -5px rgba(0, 0, 0, 0.75);
+                    margin-top: -0.8rem;
+                    .main-bottom {
+                        display: flex;
+                        justify-content: space-between;
+                        .left-bottom {
+                            .fiyat {
+                                color: #a29061;
+                                font-size: 18px;
+                                font-weight: 300;
+                                line-height: 13px;
+                                label {
+                                    font-size: 11px;
+                                    display: block;
+                                    color: #bababa;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
