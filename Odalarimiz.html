@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Odalarımız — Hotel Master</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  :root { --green: #4CAF82; --red: #E05252; }
+  .page-hero { height: 55vh; min-height: 420px; }
+  .page-hero-bg { background-image: url('https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1800&q=80'); transform: scale(1.05); }
+  .page-hero-overlay { background: linear-gradient(to bottom, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.75) 70%, var(--black) 100%); }
+
+  #app { background: var(--black); }
+
+  /* AVAILABILITY BAR */
+  .avail-bar { background: var(--charcoal); border-bottom: 1px solid rgba(201,168,76,0.15); padding: 1.5rem 4rem; position: sticky; top: 80px; z-index: 50; }
+  .avail-inner { max-width: 1280px; margin: 0 auto; display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap; }
+  .avail-field { display: flex; flex-direction: column; gap: 0.4rem; flex: 1; min-width: 140px; }
+  .avail-label { font-size: 0.58rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); }
+  .avail-input { background: var(--dark); border: 1px solid rgba(201,168,76,0.2); color: var(--white); padding: 0.75rem 1rem; font-family: var(--font-body); font-size: 0.82rem; outline: none; transition: border-color 0.3s; width: 100%; }
+  .avail-input:focus { border-color: var(--gold); }
+  .avail-input::-webkit-calendar-picker-indicator { filter: invert(0.7) sepia(1) saturate(2) hue-rotate(5deg); cursor: pointer; }
+  .avail-select { background: var(--dark); border: 1px solid rgba(201,168,76,0.2); color: var(--white); padding: 0.75rem 1rem; font-family: var(--font-body); font-size: 0.82rem; outline: none; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23C9A84C' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; }
+  .avail-btn { background: var(--gold); color: var(--black); border: none; padding: 0.75rem 2rem; font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; cursor: pointer; transition: background 0.3s; white-space: nowrap; flex-shrink: 0; height: fit-content; }
+  .avail-btn:hover { background: var(--gold-light); }
+  .avail-nights { font-size: 0.75rem; color: var(--text-muted); align-self: flex-end; padding-bottom: 0.85rem; white-space: nowrap; }
+
+  /* FILTER ROW */
+  .filter-row { padding: 2rem 4rem; max-width: 1280px; margin: 0 auto; display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+  .filter-label { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-muted); margin-right: 0.5rem; }
+  .filter-btn { background: transparent; border: 1px solid rgba(201,168,76,0.2); color: var(--text-muted); padding: 0.5rem 1.2rem; font-family: var(--font-body); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.25s; }
+  .filter-btn:hover, .filter-btn.active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+  /* ROOMS LIST */
+  .rooms-list { max-width: 1280px; margin: 0 auto; padding: 0 4rem 6rem; display: flex; flex-direction: column; gap: 1.5px; background: rgba(201,168,76,0.06); }
+
+  /* ROOM ROW */
+  .room-row { display: grid; grid-template-columns: 480px 1fr; background: var(--dark); transition: background 0.3s; position: relative; overflow: hidden; }
+  .room-row:hover { background: #202020; }
+
+  /* IMAGE SLIDER */
+  .room-gallery { position: relative; height: 360px; overflow: hidden; }
+  .room-slide { flex-shrink: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(0.88); transition: filter 0.4s; display: block; }
+  .room-row:hover .room-slide { filter: brightness(1); }
+  .gallery-prev, .gallery-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(10,10,10,0.6); border: 1px solid rgba(201,168,76,0.3); color: var(--gold); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; transition: background 0.3s; opacity: 0; }
+  .room-gallery:hover .gallery-prev, .room-gallery:hover .gallery-next { opacity: 1; }
+  .gallery-prev:hover, .gallery-next:hover { background: rgba(201,168,76,0.2); }
+  .gallery-prev { left: 0.8rem; }
+  .gallery-next { right: 0.8rem; }
+  .gallery-dots { position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 5; }
+  .gallery-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(250,248,244,0.4); cursor: pointer; transition: background 0.3s; }
+  .gallery-dot.active { background: var(--gold); }
+  .avail-badge { position: absolute; top: 1rem; left: 1rem; z-index: 5; padding: 0.35rem 0.9rem; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 600; }
+  .avail-badge.available { background: var(--green); color: #fff; }
+  .avail-badge.limited { background: var(--gold); color: var(--black); }
+  .avail-badge.unavailable { background: var(--red); color: #fff; }
+
+  /* ROOM DETAIL */
+  .room-detail { padding: 2.5rem 2.5rem 2rem; display: flex; flex-direction: column; }
+  .room-cat { font-size: 0.58rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
+  .room-name { font-family: var(--font-display); font-size: 2rem; font-weight: 400; color: var(--white); line-height: 1.1; margin-bottom: 0.5rem; }
+  .room-capacity { display: flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; color: var(--text-muted); margin-bottom: 1.2rem; }
+  .room-capacity svg { color: var(--gold); flex-shrink: 0; }
+  .room-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.9; margin-bottom: 1.5rem; flex: 1; }
+  .room-specs { display: flex; gap: 2rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .room-spec { display: flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; color: var(--text-muted); }
+  .room-spec svg { color: var(--gold); flex-shrink: 0; }
+  .room-amenities { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.8rem; }
+  .amenity-tag { background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.15); padding: 0.3rem 0.8rem; font-size: 0.63rem; letter-spacing: 0.1em; color: var(--text-muted); }
+  .room-footer-row { display: flex; align-items: center; justify-content: space-between; padding-top: 1.5rem; border-top: 1px solid rgba(201,168,76,0.12); margin-top: auto; }
+  .room-price-num { font-family: var(--font-display); font-size: 2.5rem; font-weight: 300; color: var(--gold); line-height: 1; }
+  .room-price-night { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.2rem; }
+  .room-total { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
+  .room-total strong { color: var(--white); }
+  .room-actions { display: flex; gap: 0.8rem; }
+  .btn-book { background: var(--gold); color: var(--black); border: none; padding: 0.85rem 2rem; font-family: var(--font-body); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; cursor: pointer; transition: background 0.3s, transform 0.2s; }
+  .btn-book:hover { background: var(--gold-light); transform: translateY(-2px); }
+  .btn-book:disabled { background: var(--mid); color: var(--text-muted); cursor: not-allowed; transform: none; }
+  .btn-detail { background: transparent; border: 1px solid rgba(201,168,76,0.3); color: var(--gold); padding: 0.85rem 1.5rem; font-family: var(--font-body); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; cursor: pointer; transition: border-color 0.3s, background 0.3s; }
+  .btn-detail:hover { border-color: var(--gold); background: var(--gold-dim); }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(10,10,10,0.88); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 2rem; animation: fadeIn 0.2s; }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  .modal { background: var(--dark); max-width: 640px; width: 100%; max-height: 90vh; overflow-y: auto; border: 1px solid rgba(201,168,76,0.15); animation: slideUp 0.35s cubic-bezier(0.16,1,0.3,1); }
+  @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:none; } }
+  .modal-header { padding: 2rem; border-bottom: 1px solid rgba(201,168,76,0.1); display: flex; justify-content: space-between; align-items: flex-start; }
+  .modal-title { font-family: var(--font-display); font-size: 1.8rem; font-weight: 400; color: var(--white); }
+  .modal-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem; padding: 0.2rem; transition: color 0.2s; line-height: 1; }
+  .modal-close:hover { color: var(--gold); }
+  .modal-body { padding: 2rem; }
+  .modal-img { width: 100%; height: 240px; object-fit: cover; margin-bottom: 1.5rem; }
+  .modal-form { display: flex; flex-direction: column; gap: 1rem; }
+  .modal-field { display: flex; flex-direction: column; gap: 0.4rem; }
+  .modal-label { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); }
+  .modal-input { background: var(--mid); border: 1px solid rgba(201,168,76,0.15); color: var(--white); padding: 0.8rem 1rem; font-family: var(--font-body); font-size: 0.85rem; outline: none; transition: border-color 0.3s; }
+  .modal-input:focus { border-color: var(--gold); }
+  .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .modal-summary { background: rgba(201,168,76,0.06); border: 1px solid rgba(201,168,76,0.12); padding: 1.2rem; margin: 0.5rem 0; }
+  .modal-summary-row { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+  .modal-summary-row:last-child { margin-bottom: 0; color: var(--white); font-weight: 500; border-top: 1px solid rgba(201,168,76,0.12); padding-top: 0.6rem; margin-top: 0.4rem; }
+  .modal-summary-row span:last-child { color: var(--gold); }
+  .modal-submit { background: var(--gold); color: var(--black); border: none; padding: 1rem; font-family: var(--font-body); font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; cursor: pointer; transition: background 0.3s; }
+  .modal-submit:hover { background: var(--gold-light); }
+  .success-msg { text-align: center; padding: 2rem; }
+  .success-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .success-title { font-family: var(--font-display); font-size: 1.8rem; color: var(--gold); margin-bottom: 0.5rem; }
+  .success-desc { font-size: 0.82rem; color: var(--text-muted); }
+
+  /* EMPTY */
+  .empty-state { text-align: center; padding: 6rem 2rem; }
+  .empty-title { font-family: var(--font-display); font-size: 2rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+  .empty-desc { font-size: 0.82rem; color: rgba(250,248,244,0.3); }
+
+  @media (max-width: 1023px) {
+    .room-row { grid-template-columns: 1fr; }
+    .room-gallery { height: 280px; }
+    .avail-bar { padding: 1.25rem 2rem; }
+    .avail-inner { flex-wrap: wrap; gap: 0.75rem; }
+    .filter-row { padding: 1.5rem 2rem; }
+    .rooms-list { padding: 0 2rem 5rem; }
+    .modal-row { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 767px) {
+    .avail-bar { padding: 1rem 1.25rem; top: 70px; }
+    .avail-field { min-width: unset; width: 100%; }
+    .avail-nights { align-self: stretch; padding-bottom: 0; }
+    .avail-btn { width: 100%; }
+    .filter-row { padding: 1rem 1.25rem; }
+    .rooms-list { padding: 0 1.25rem 4rem; }
+    .room-gallery { height: 240px; }
+    .room-detail { padding: 1.5rem 1.25rem; }
+    .room-name { font-size: 1.5rem; }
+    .room-price-num { font-size: 1.8rem; }
+    .room-footer-row { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .room-actions { width: 100%; }
+    .btn-book, .btn-detail { flex: 1; text-align: center; }
+    .modal { margin: 0.75rem; padding: 0; }
+    .modal-body { padding: 1.25rem; }
+    .modal-header { padding: 1.25rem; }
+    .modal-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav--solid">
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-name">HOTEL MASTER</span>
+    <span class="nav-logo-sub">Luxury &amp; Excellence</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Anasayfa</a></li>
+    <li><a href="Hakkimizda.html">Hakkımızda</a></li>
+    <li><a href="Odalarimiz.html" class="active">Odalarımız</a></li>
+    <li><a href="Galeri.html">Galeri</a></li>
+    <li><a href="Aktiviteler.html">Aktiviteler</a></li>
+    <li><a href="Iletisim.html">İletişim</a></li>
+  </ul>
+  <a href="Iletisim.html" class="nav-reserve">Rezervasyon Yap</a>
+  <button class="nav-toggle" aria-label="Menüyü aç"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <div class="breadcrumb">
+      <a href="index.html">Anasayfa</a>
+      <span>/</span>
+      <span style="color:var(--white);">Odalarımız</span>
+    </div>
+    <h1 class="page-hero-title">Lüks &amp; Konfor<br><em>Her Odada</em></h1>
+  </div>
+</div>
+
+<div id="app"></div>
+
+<footer>
+  <div class="footer-bottom">
+    <a href="index.html" class="footer-back">
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M15 5H1M6 1L2 5l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Anasayfaya Dön
+    </a>
+    <span>© 2026 Hotel Master · Tüm hakları saklıdır</span>
+    <span><a href="#">Gizlilik Politikası</a></span>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script type="text/babel">
+const { useState } = React;
+
+const ROOMS = [
+  { id:1, category:"Standart Oda", name:"Classic Oda", capacity:2, size:28, view:"Şehir Manzarası", price:150, floor:"2-4. Kat", desc:"Sıcak ahşap tonları ve modern donanımıyla tasarlanmış Classic Odamız, şehrin kalbinde konforlu bir konaklama sunar. 28 m² alanıyla çift veya twin yatak seçeneğiyle sunulan odamız, şehir manzarasının tadını çıkarmanız için geniş bir pencereye sahiptir.", amenities:["Klima","Wi-Fi","Mini Bar","LCD TV","Saç Kurutma","Kasa","Masaüstü","Çay & Kahve"], images:["https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80","https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&q=80","https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=800&q=80"], available:true, rooms_left:8 },
+  { id:2, category:"Deluxe Oda", name:"Deluxe Oda", capacity:2, size:35, view:"Bahçe Manzarası", price:200, floor:"3-6. Kat", desc:"Özel tasarım mobilyaları ve premium yatak konforu ile donatılmış Deluxe Odamız, sessiz bahçe manzarasına açılan büyük pencereleriyle huzuru yaşatır. Geniş banyosu ve lüks aksesuarlarıyla kendinizi şımartın.", amenities:["Klima","Wi-Fi","Mini Bar","LCD TV","Küvet","Sauna Duş","Kasa","Çay & Kahve","Bornoz & Terlik","Ücretsiz Minibar"], images:["https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&q=80","https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80","https://images.unsplash.com/photo-1566195992011-5f6b21e539aa?w=800&q=80"], available:true, rooms_left:5 },
+  { id:3, category:"Executive Oda", name:"Executive Oda", capacity:2, size:45, view:"Deniz Manzarası", price:300, floor:"5-8. Kat", desc:"Panoramik deniz manzarasına açılan Executive Odamız, özel lounge erişimi ve kişiye özel butler hizmeti sunar. Ayrı oturma alanı, premium kahve makinesi ve özel minibar ile iş veya tatil amaçlı konaklamalarınız için idealdir.", amenities:["Klima","Wi-Fi","Premium Mini Bar","55\" LCD TV","Küvet & Yağmur Duş","Butler Hizmeti","Lounge Erişimi","Kasa","Bornoz & Terlik","Ücretsiz Minibar","Sabah Gazetesi"], images:["https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80","https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80","https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80"], available:true, rooms_left:3 },
+  { id:4, category:"Aile Odası", name:"Aile Odası", capacity:4, size:55, view:"Havuz Manzarası", price:350, floor:"2-4. Kat", desc:"4 kişiye kadar konforla ağırlayabilen Aile Odamız, iki ayrı uyku alanı ve çocuklara özel aksesuarlarıyla tam bir aile tatili deneyimi sunar. Havuz manzarasına açılan terasıyla çocuklarınızın en sevdiği tatil mekanı olacak.", amenities:["Klima","Wi-Fi","Mini Bar","LCD TV","Çocuk Karyolası","Bebek Banyosu","Oyun Köşesi","Kasa","Çay & Kahve","Bornoz & Terlik"], images:["https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80","https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&q=80","https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80"], available:false, rooms_left:0 },
+  { id:5, category:"Balayı Suite", name:"Balayı Suite", capacity:2, size:65, view:"Panoramik Manzara", price:450, floor:"7-8. Kat (Teras Kat)", desc:"Çiftlerin hayalindeki romantik kaçışı sunan Balayı Suite'imiz, özel jakuzi, kişisel teras ve panoramik İstanbul manzarasıyla eşsiz bir deneyim vaat eder. Giriş anında çiçek dekorasyonu ve şampanya ikramımız dahildir.", amenities:["Özel Jakuzi","Teras","Klima","Wi-Fi","Şampanya","Çiçek Dekoru","Butler Hizmeti","Premium Mini Bar","65\" TV","Bornoz & Terlik","Ücretsiz Minibar","Sabah Kahvaltısı","Spa Kredisi"], images:["https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80","https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80","https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80"], available:true, rooms_left:2 },
+  { id:6, category:"Presidential Suite", name:"Presidential Suite", capacity:4, size:120, view:"360° Panoramik", price:1200, floor:"Penthouse — 9. Kat", desc:"Hotel Master'ın zirvesi olan Presidential Suite, 120 m² yaşam alanı, özel yemek odası, kütüphane ve 360° panoramik manzara terasıyla lüksü yeniden tanımlar. Özel şoför, kişisel butler ve öncelikli spa hizmeti dahildir.", amenities:["Özel Teras","Özel Şoför","Butler","Jakuzi","Sauna","Yemek Odası","Kütüphane","Premium Bar","4K TV","Bornoz & Terlik","Tüm Yiyecek-İçecek","Spa Dahil","Havalimanı Transferi"], images:["https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80","https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80","https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&q=80"], available:true, rooms_left:1 },
+];
+
+function getToday() { return new Date().toISOString().split('T')[0]; }
+function getTomorrow() { const d = new Date(); d.setDate(d.getDate()+1); return d.toISOString().split('T')[0]; }
+function calcNights(ci, co) { return Math.max(1, Math.round((new Date(co)-new Date(ci))/86400000)); }
+
+function ImageSlider({ images }) {
+  const [idx, setIdx] = useState(0);
+  return (
+    <div className="room-gallery">
+      <div style={{display:'flex',height:'100%',transform:`translateX(-${idx*100}%)`,transition:'transform 0.5s cubic-bezier(0.16,1,0.3,1)'}}>
+        {images.map((src,i) => <img key={i} src={src} className="room-slide" alt="" style={{flexShrink:0,width:'100%',height:'100%',objectFit:'cover'}} />)}
+      </div>
+      {idx > 0 && <button className="gallery-prev" onClick={e=>{e.stopPropagation();setIdx(idx-1)}}><svg width="10" height="14" viewBox="0 0 10 14" fill="none"><path d="M8 1L2 7l6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg></button>}
+      {idx < images.length-1 && <button className="gallery-next" onClick={e=>{e.stopPropagation();setIdx(idx+1)}}><svg width="10" height="14" viewBox="0 0 10 14" fill="none"><path d="M2 1l6 6-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg></button>}
+      <div className="gallery-dots">{images.map((_,i) => <div key={i} className={`gallery-dot${i===idx?' active':''}`} onClick={e=>{e.stopPropagation();setIdx(i)}} />)}</div>
+    </div>
+  );
+}
+
+function AvailBadge({ room }) {
+  if (!room.available) return <div className="avail-badge unavailable">Dolu</div>;
+  if (room.rooms_left <= 2) return <div className="avail-badge limited">Son {room.rooms_left} Oda!</div>;
+  return <div className="avail-badge available">Müsait</div>;
+}
+
+function BookingModal({ room, checkin, checkout, nights, onClose }) {
+  const [form, setForm] = useState({name:'',email:'',phone:'',note:''});
+  const [done, setDone] = useState(false);
+  const total = room.price * nights;
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" onClick={e=>e.stopPropagation()}>
+        <div className="modal-header">
+          <div><div className="modal-title">{room.name}</div><div style={{fontSize:'0.65rem',letterSpacing:'0.2em',textTransform:'uppercase',color:'var(--gold)',marginTop:'0.2rem'}}>{room.category}</div></div>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div className="modal-body">
+          {done ? (
+            <div className="success-msg"><div className="success-icon">✓</div><div className="success-title">Rezervasyon Talebi Alındı!</div><p className="success-desc">En kısa sürede sizinle iletişime geçeceğiz. Teşekkür ederiz.</p></div>
+          ) : (
+            <>
+              <img src={room.images[0]} className="modal-img" alt={room.name} />
+              <div className="modal-summary">
+                <div className="modal-summary-row"><span>Giriş</span><span>{checkin}</span></div>
+                <div className="modal-summary-row"><span>Çıkış</span><span>{checkout}</span></div>
+                <div className="modal-summary-row"><span>Süre</span><span>{nights} gece</span></div>
+                <div className="modal-summary-row"><span>Gecelik</span><span>₺{room.price}</span></div>
+                <div className="modal-summary-row"><span>Toplam</span><span>₺{total.toLocaleString('tr-TR')}</span></div>
+              </div>
+              <form className="modal-form" onSubmit={e=>{e.preventDefault();setDone(true);}}>
+                <div className="modal-row">
+                  <div className="modal-field"><label className="modal-label">Ad Soyad</label><input className="modal-input" required value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Ahmet Yılmaz" /></div>
+                  <div className="modal-field"><label className="modal-label">Telefon</label><input className="modal-input" required value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} placeholder="+90 5XX XXX XX XX" /></div>
+                </div>
+                <div className="modal-field"><label className="modal-label">E-Posta</label><input className="modal-input" type="email" required value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="ornek@email.com" /></div>
+                <div className="modal-field"><label className="modal-label">Özel İstek (İsteğe Bağlı)</label><input className="modal-input" value={form.note} onChange={e=>setForm({...form,note:e.target.value})} placeholder="Erken check-in, özel süsleme vb." /></div>
+                <button type="submit" className="modal-submit">Rezervasyon Talebini Gönder</button>
+              </form>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [checkin, setCheckin] = useState(getToday());
+  const [checkout, setCheckout] = useState(getTomorrow());
+  const [guests, setGuests] = useState('2');
+  const [filter, setFilter] = useState('all');
+  const [searched, setSearched] = useState(false);
+  const [bookingRoom, setBookingRoom] = useState(null);
+  const nights = calcNights(checkin, checkout);
+  const guestNum = parseInt(guests);
+  let filtered = ROOMS;
+  if (filter === '1') filtered = ROOMS.filter(r => r.capacity <= 2);
+  else if (filter === '2') filtered = ROOMS.filter(r => r.capacity === 2);
+  else if (filter === '3+') filtered = ROOMS.filter(r => r.capacity >= 3);
+  else if (filter === 'available') filtered = ROOMS.filter(r => r.available);
+  else if (filter === 'suite') filtered = ROOMS.filter(r => r.category.toLowerCase().includes('suite') || r.category.toLowerCase().includes('presidential'));
+  if (searched && guestNum > 0) filtered = filtered.filter(r => r.capacity >= guestNum);
+  return (
+    <div>
+      <div className="avail-bar">
+        <div className="avail-inner">
+          <div className="avail-field"><label className="avail-label">Giriş Tarihi</label><input type="date" className="avail-input" value={checkin} min={getToday()} onChange={e=>{setCheckin(e.target.value);if(e.target.value>=checkout){const d=new Date(e.target.value);d.setDate(d.getDate()+1);setCheckout(d.toISOString().split('T')[0]);}}} /></div>
+          <div className="avail-field"><label className="avail-label">Çıkış Tarihi</label><input type="date" className="avail-input" value={checkout} min={checkin} onChange={e=>setCheckout(e.target.value)} /></div>
+          <div className="avail-field" style={{maxWidth:'160px'}}><label className="avail-label">Kişi Sayısı</label><select className="avail-select avail-input" value={guests} onChange={e=>setGuests(e.target.value)}><option value="1">1 Kişi</option><option value="2">2 Kişi</option><option value="3">3 Kişi</option><option value="4">4 Kişi</option></select></div>
+          <div className="avail-nights">{nights} gece · <strong style={{color:'var(--gold)'}}>Müsaitlik Kontrolü</strong></div>
+          <button className="avail-btn" onClick={()=>setSearched(true)}>Ara</button>
+        </div>
+      </div>
+      <div className="filter-row">
+        <span className="filter-label">Filtre:</span>
+        {[['all','Tümü'],['available','Müsait'],['2','2 Kişilik'],['3+','Aile'],['suite','Suite']].map(([val,label])=>(
+          <button key={val} className={`filter-btn${filter===val?' active':''}`} onClick={()=>setFilter(val)}>{label}</button>
+        ))}
+      </div>
+      <div className="rooms-list">
+        {filtered.length === 0 ? (
+          <div className="empty-state"><div className="empty-title">Uygun oda bulunamadı</div><p className="empty-desc">Farklı tarih veya kişi sayısı ile tekrar deneyin.</p></div>
+        ) : filtered.map(room => {
+          const total = room.price * nights;
+          return (
+            <div className="room-row" key={room.id}>
+              <div style={{position:'relative'}}><AvailBadge room={room} /><ImageSlider images={room.images} /></div>
+              <div className="room-detail">
+                <div className="room-cat">{room.category}</div>
+                <div className="room-name">{room.name}</div>
+                <div className="room-capacity"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg><span>{room.capacity} Kişiye Kadar · {room.floor}</span></div>
+                <p className="room-desc">{room.desc}</p>
+                <div className="room-specs">
+                  <div className="room-spec"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>{room.size} m²</div>
+                  <div className="room-spec"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>{room.view}</div>
+                  <div className="room-spec"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>{room.floor}</div>
+                </div>
+                <div className="room-amenities">
+                  {room.amenities.slice(0,8).map(a=><span key={a} className="amenity-tag">{a}</span>)}
+                  {room.amenities.length>8 && <span className="amenity-tag" style={{color:'var(--gold)',borderColor:'var(--gold)'}}>+{room.amenities.length-8} daha</span>}
+                </div>
+                <div className="room-footer-row">
+                  <div><div className="room-price-num">₺{room.price}</div><div className="room-price-night">/ Gecelik</div>{nights>1 && <div className="room-total">Toplam: <strong>₺{total.toLocaleString('tr-TR')}</strong> ({nights} gece)</div>}</div>
+                  <div className="room-actions">
+                    <button className="btn-detail">Detaylar</button>
+                    <button className="btn-book" disabled={!room.available} onClick={()=>room.available&&setBookingRoom(room)}>{room.available?'Rezervasyon Yap':'Dolu'}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {bookingRoom && <BookingModal room={bookingRoom} checkin={checkin} checkout={checkout} nights={nights} onClose={()=>setBookingRoom(null)} />}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('app')).render(<App />);
+</script>
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aktiviteler — Hotel Master</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .page-hero { height: 55vh; min-height: 420px; }
+  .page-hero-bg { background-image: url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1800&q=80'); }
+  .page-hero-overlay { background: linear-gradient(to bottom, rgba(10,10,10,0.25) 0%, rgba(10,10,10,0.72) 65%, var(--black) 100%); }
+
+  /* INTRO */
+  .intro-section { padding: 5rem 4rem 0; max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: end; }
+  .intro-label { font-size: 0.6rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; }
+  .intro-label::before { content: ''; width: 30px; height: 1px; background: var(--gold); }
+  .intro-title { font-family: var(--font-display); font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 300; line-height: 1.15; }
+  .intro-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.95; }
+
+  /* ACTIVITY CARDS */
+  .activities-section { padding: 4rem 4rem 6rem; max-width: 1280px; margin: 0 auto; }
+  .activity-block { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: rgba(201,168,76,0.06); margin-bottom: 2px; }
+  .activity-block.reverse .activity-block-img { order: 2; }
+  .activity-block.reverse .activity-block-info { order: 1; }
+  .activity-block-img { position: relative; height: 480px; overflow: hidden; }
+  .activity-block-img img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85); transition: transform 0.8s cubic-bezier(0.16,1,0.3,1), filter 0.5s; }
+  .activity-block:hover .activity-block-img img { transform: scale(1.06); filter: brightness(1); }
+  .activity-block-num { position: absolute; top: 1.5rem; left: 1.5rem; font-family: var(--font-display); font-size: 4rem; font-weight: 300; color: rgba(201,168,76,0.25); line-height: 1; }
+  .activity-block-info { background: var(--dark); padding: 3.5rem; display: flex; flex-direction: column; justify-content: center; transition: background 0.4s; }
+  .activity-block:hover .activity-block-info { background: #202020; }
+  .act-icon { width: 56px; height: 56px; border: 1px solid rgba(201,168,76,0.3); display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; font-size: 1.3rem; transition: border-color 0.4s, background 0.4s; }
+  .activity-block:hover .act-icon { border-color: var(--gold); background: var(--gold-dim); }
+  .act-cat { font-size: 0.58rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
+  .act-name { font-family: var(--font-display); font-size: 2.2rem; font-weight: 300; color: var(--white); line-height: 1.1; margin-bottom: 1.2rem; }
+  .act-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.95; margin-bottom: 2rem; }
+  .act-features { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 2rem; }
+  .act-feature { display: flex; align-items: center; gap: 0.7rem; font-size: 0.75rem; color: var(--text-muted); }
+  .act-feature-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+  .act-hours { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(201,168,76,0.25); padding: 0.5rem 1rem; margin-bottom: 1.5rem; }
+  .act-divider { width: 40px; height: 1px; background: rgba(201,168,76,0.25); margin-bottom: 1.5rem; }
+  .act-cta { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); font-weight: 500; background: none; border: none; cursor: pointer; font-family: var(--font-body); padding: 0; transition: gap 0.3s; }
+  .act-cta:hover { gap: 1rem; }
+
+  /* MINI GRID */
+  .mini-grid-section { background: var(--charcoal); padding: 5rem 0; }
+  .mini-grid-inner { max-width: 1280px; margin: 0 auto; padding: 0 4rem; }
+  .mini-section-label { font-size: 0.6rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; }
+  .mini-section-label::before { content: ''; width: 30px; height: 1px; background: var(--gold); }
+  .mini-section-title { font-family: var(--font-display); font-size: clamp(2rem, 3vw, 2.8rem); font-weight: 300; margin-bottom: 3rem; }
+  .mini-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5px; background: rgba(201,168,76,0.06); }
+  .mini-card { background: var(--dark); padding: 2rem; transition: background 0.3s; position: relative; overflow: hidden; }
+  .mini-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--gold); transform: scaleX(0); transition: transform 0.4s; }
+  .mini-card:hover { background: var(--mid); }
+  .mini-card:hover::after { transform: scaleX(1); }
+  .mini-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+  .mini-name { font-family: var(--font-display); font-size: 1.25rem; font-weight: 400; color: var(--white); margin-bottom: 0.5rem; }
+  .mini-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.8; }
+
+  /* CTA STRIP */
+  .reserve-strip { background: var(--gold); padding: 4rem; }
+  .reserve-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+  .reserve-text .strip-title { font-family: var(--font-display); font-size: 2.2rem; font-weight: 300; color: var(--black); line-height: 1.2; }
+  .reserve-text .strip-sub { font-size: 0.82rem; color: rgba(10,10,10,0.65); margin-top: 0.4rem; }
+  .reserve-btn { background: var(--black); color: var(--white); border: none; padding: 1rem 2.5rem; font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background 0.3s; flex-shrink: 0; }
+  .reserve-btn:hover { background: #222; }
+
+  @media (max-width: 1023px) {
+    .intro-section { grid-template-columns: 1fr; gap: 2.5rem; padding: 4rem 2rem 0; }
+    .activity-block { grid-template-columns: 1fr; }
+    .activity-block.reverse .activity-block-img,
+    .activity-block.reverse .activity-block-info { order: 0; }
+    .activity-block-img { height: 320px; }
+    .mini-grid { grid-template-columns: repeat(2, 1fr); }
+    .mini-grid-inner { padding: 0 2rem; }
+    .activities-section { padding: 3rem 2rem 5rem; }
+  }
+  @media (max-width: 767px) {
+    .intro-section { padding: 3rem 1.25rem 0; gap: 2rem; }
+    .activities-section { padding: 2rem 1.25rem 4rem; }
+    .activity-block-img { height: 240px; }
+    .activity-block-info { padding: 2rem 1.25rem; }
+    .act-name { font-size: 1.6rem; }
+    .activity-block-num { font-size: 2.5rem; }
+    .reserve-strip { padding: 3rem 1.25rem; }
+    .reserve-inner { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+    .mini-grid-inner { padding: 0 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav--solid">
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-name">HOTEL MASTER</span>
+    <span class="nav-logo-sub">Luxury &amp; Excellence</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Anasayfa</a></li>
+    <li><a href="Hakkimizda.html">Hakkımızda</a></li>
+    <li><a href="Odalarimiz.html">Odalarımız</a></li>
+    <li><a href="Galeri.html">Galeri</a></li>
+    <li><a href="Aktiviteler.html" class="active">Aktiviteler</a></li>
+    <li><a href="Iletisim.html">İletişim</a></li>
+  </ul>
+  <a href="Iletisim.html" class="nav-reserve">Rezervasyon Yap</a>
+  <button class="nav-toggle" aria-label="Menüyü aç"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <div class="breadcrumb">
+      <a href="index.html">Anasayfa</a>
+      <span>/</span>
+      <span style="color:var(--white);">Aktiviteler</span>
+    </div>
+    <h1 class="page-hero-title">Her An<br><em>Unutulmaz Olsun</em></h1>
+  </div>
+</div>
+
+<!-- INTRO -->
+<div class="intro-section reveal">
+  <div>
+    <div class="intro-label">Hizmetlerimiz</div>
+    <h2 class="intro-title">Konaklamanızı<br>Deneyime Dönüştürüyoruz</h2>
+  </div>
+  <p class="intro-desc">Hotel Master'da bir gecelik konaklamanız, onlarca ayrıcalıklı hizmet ve aktiviteyle dolu bir deneyime dönüşür. Dünya standartlarındaki ekibimiz ve lüks tesislerimizle her isteğinizi yerine getirmeye hazırız.</p>
+</div>
+
+<!-- MAIN ACTIVITIES -->
+<div class="activities-section">
+
+  <!-- 1 — Hamam & Spa -->
+  <div class="activity-block reveal">
+    <div class="activity-block-img">
+      <div class="activity-block-num">01</div>
+      <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=900&q=80" alt="Hamam & Spa">
+    </div>
+    <div class="activity-block-info">
+      <div class="act-icon">♨</div>
+      <div class="act-cat">Wellness &amp; Sağlık</div>
+      <div class="act-name">Hamam, Sauna<br>&amp; Spa Merkezi</div>
+      <p class="act-desc">Yüzyıllık Osmanlı geleneğinden ilham alan özel hamamımız ve modern spa merkezimizde bedeninizi ve zihninizi yenileyin. Uzman terapistlerimiz eşliğinde aromaterapi, kaya tuzu masajı ve cilt bakımı dahil pek çok seçenek sizi bekliyor.</p>
+      <div class="act-features">
+        <div class="act-feature"><div class="act-feature-dot"></div>Geleneksel Türk Hamamı</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Fin Sauna &amp; Buharlı Oda</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Aromaterapi &amp; Taş Masajı</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Cilt Bakımı &amp; Güzellik Uygulamaları</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Çift Spa Paketi (Balayı)</div>
+      </div>
+      <div class="act-divider"></div>
+      <div class="act-hours">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Her Gün 08:00 – 22:00
+      </div>
+      <button class="act-cta">Randevu Al <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 5h14M10 1l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+  <!-- 2 — Restoran -->
+  <div class="activity-block reverse reveal">
+    <div class="activity-block-img">
+      <div class="activity-block-num">02</div>
+      <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80" alt="Restoran">
+    </div>
+    <div class="activity-block-info">
+      <div class="act-icon">🍽</div>
+      <div class="act-cat">Yeme &amp; İçme</div>
+      <div class="act-name">Fine Dining<br>Restoran</div>
+      <p class="act-desc">Şef Kemal Arslan önderliğinde hazırlanan Türk mutfağının en seçkin lezzetleri ve dünya mutfağından özel seçkiler, şık restoranımızda sizleri bekliyor. Her öğünü ayrıcalıklı bir deneyime dönüştüren atmosfer ve sunumla mükemmel bir gastronomi yolculuğuna çıkın.</p>
+      <div class="act-features">
+        <div class="act-feature"><div class="act-feature-dot"></div>Açık Büfe Kahvaltı (07:00–10:30)</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>À La Carte Öğle &amp; Akşam Yemeği</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Özel Tadım Menüsü (6 Kurs)</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Genişletilmiş Şarap Listesi</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Özel Gün Rezervasyonu</div>
+      </div>
+      <div class="act-divider"></div>
+      <div class="act-hours">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Her Gün 07:00 – 23:00
+      </div>
+      <button class="act-cta">Masa Rezervasyonu <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 5h14M10 1l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+  <!-- 3 — Balayı -->
+  <div class="activity-block reveal">
+    <div class="activity-block-img">
+      <div class="activity-block-num">03</div>
+      <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=900&q=80" alt="Balayı">
+    </div>
+    <div class="activity-block-info">
+      <div class="act-icon">💍</div>
+      <div class="act-cat">Özel Paketler</div>
+      <div class="act-name">Balayı &amp;<br>Romantik Paket</div>
+      <p class="act-desc">Hayatınızın en özel anlarını Hotel Master'da kutlayın. Çiçek dekorasyonlu özel oda hazırlığı, şampanya ikramı ve kişiselleştirilmiş romantik sürprizlerle çiftlere özgü unutulmaz bir deneyim sunuyoruz.</p>
+      <div class="act-features">
+        <div class="act-feature"><div class="act-feature-dot"></div>Özel Oda Çiçek Dekorasyonu</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Şampanya &amp; Çikolata İkramı</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Çift Spa Seansı (60 dk)</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Romantik Akşam Yemeği</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Sabah Odaya Kahvaltı Servisi</div>
+      </div>
+      <div class="act-divider"></div>
+      <div class="act-hours">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Önceden Rezervasyon Gerekli
+      </div>
+      <button class="act-cta">Paketi İncele <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 5h14M10 1l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+  <!-- 4 — Toplantı -->
+  <div class="activity-block reverse reveal">
+    <div class="activity-block-img">
+      <div class="activity-block-num">04</div>
+      <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=900&q=80" alt="Toplantı">
+    </div>
+    <div class="activity-block-info">
+      <div class="act-icon">🤝</div>
+      <div class="act-cat">İş &amp; Organizasyon</div>
+      <div class="act-name">Toplantı &amp;<br>Organizasyon Salonu</div>
+      <p class="act-desc">Kurumsal etkinlikleriniz, seminerleriniz ve özel organizasyonlarınız için son teknolojiyle donatılmış toplantı salonlarımız hazır. Profesyonel ekibimiz, etkinliğinizin başından sonuna kadar tüm detaylarla ilgilenir.</p>
+      <div class="act-features">
+        <div class="act-feature"><div class="act-feature-dot"></div>4K Projeksiyon &amp; Ses Sistemi</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Yüksek Hızlı Kurumsal Wi-Fi</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>50–500 Kişilik Kapasite Seçenekleri</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Kokteyl &amp; Catering Hizmeti</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Simultane Tercüme Kabini</div>
+      </div>
+      <div class="act-divider"></div>
+      <div class="act-hours">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Pazartesi – Pazar 07:00 – 24:00
+      </div>
+      <button class="act-cta">Teklif Al <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 5h14M10 1l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+  <!-- 5 — Oda Servisi -->
+  <div class="activity-block reveal">
+    <div class="activity-block-img">
+      <div class="activity-block-num">05</div>
+      <img src="https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=900&q=80" alt="Oda Servisi">
+    </div>
+    <div class="activity-block-info">
+      <div class="act-icon">☕</div>
+      <div class="act-cat">Kişisel Hizmet</div>
+      <div class="act-name">7/24<br>Oda Servisi</div>
+      <p class="act-desc">Gece yarısı bir açlık tutması ya da sabah erken bir kahve isteği — fark etmez. 7/24 oda servisi ekibimiz, tam menüyle her saate hazır. Odanızın konforunda en lezzetli yemekleri ve içecekleri keyifle tüketin.</p>
+      <div class="act-features">
+        <div class="act-feature"><div class="act-feature-dot"></div>Tam Restoran Menüsü (Gece dahil)</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Özel Diyet Menüleri (Vegan, Glutensiz)</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Sıcak &amp; Soğuk Kahvaltı Seçenekleri</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Şarap &amp; Kokteyl Listesi</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Ortalama 25 Dakika Teslimat</div>
+      </div>
+      <div class="act-divider"></div>
+      <div class="act-hours">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        7 Gün 24 Saat Kesintisiz
+      </div>
+      <button class="act-cta">Menüyü Gör <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 5h14M10 1l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+  <!-- 6 — Eğlence -->
+  <div class="activity-block reverse reveal">
+    <div class="activity-block-img">
+      <div class="activity-block-num">06</div>
+      <img src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=900&q=80" alt="Eğlence">
+    </div>
+    <div class="activity-block-info">
+      <div class="act-icon">🎵</div>
+      <div class="act-cat">Eğlence &amp; Sosyal</div>
+      <div class="act-name">Canlı Müzik<br>&amp; Bar</div>
+      <p class="act-desc">Hafta sonları canlı müzik performansları, özel temalı geceler ve seçkin bir kokteyl menüsüyle sosyal hayatınızı Hotel Master'a taşıyın. Samimi atmosferi ve premium içecek seçenekleriyle tüm gece keyfini çıkarmak için ideal bir ortam.</p>
+      <div class="act-features">
+        <div class="act-feature"><div class="act-feature-dot"></div>Canlı Müzik (Cuma &amp; Cumartesi)</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>DJ Geceler &amp; Temalı Etkinlikler</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Premium Kokteyl &amp; Şarap Menüsü</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>VIP Özel Alan Rezervasyonu</div>
+        <div class="act-feature"><div class="act-feature-dot"></div>Doğum Günü &amp; Kutlama Organizasyonu</div>
+      </div>
+      <div class="act-divider"></div>
+      <div class="act-hours">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Her Gün 18:00 – 02:00
+      </div>
+      <button class="act-cta">Etkinlik Takvimi <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 5h14M10 1l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+</div>
+
+<!-- MINI EXTRAS -->
+<div class="mini-grid-section">
+  <div class="mini-grid-inner">
+    <div class="mini-section-label">Diğer Hizmetler</div>
+    <h2 class="mini-section-title">Ayrıcalıklı<br>Ek Hizmetler</h2>
+    <div class="mini-grid">
+      <div class="mini-card"><div class="mini-icon">🏊</div><div class="mini-name">Yüzme Havuzu</div><p class="mini-desc">Açık ve kapalı havuzlarımızda serinleyin. Havuz başı servis de mevcut.</p></div>
+      <div class="mini-card"><div class="mini-icon">🏋️</div><div class="mini-name">Fitness Merkezi</div><p class="mini-desc">Modern ekipmanlarla donatılmış fitness merkezimiz 06:00–23:00 açık.</p></div>
+      <div class="mini-card"><div class="mini-icon">🚗</div><div class="mini-name">Valet &amp; Transfer</div><p class="mini-desc">Havalimanı transferi ve vale park hizmeti ile konaklamanız baştan sona kolay.</p></div>
+      <div class="mini-card"><div class="mini-icon">👶</div><div class="mini-name">Çocuk Kulübü</div><p class="mini-desc">Çocuklarınız güvende oynarken siz dinlenin. 4–12 yaş arası çocuklar için.</p></div>
+      <div class="mini-card"><div class="mini-icon">🛒</div><div class="mini-name">Butik &amp; Hediyelik</div><p class="mini-desc">Otel içi butiğimizde yerel el işleri, özel koleksiyonlar ve hediyelikler.</p></div>
+      <div class="mini-card"><div class="mini-icon">🎰</div><div class="mini-name">Oyun Salonu</div><p class="mini-desc">Bilardo, dart ve masa oyunlarıyla eğlenceli vakit geçirin.</p></div>
+      <div class="mini-card"><div class="mini-icon">📚</div><div class="mini-name">Kütüphane &amp; Lounge</div><p class="mini-desc">Sessiz okuma köşesi ve premium kahve menüsüyle huzurlu saatler.</p></div>
+      <div class="mini-card"><div class="mini-icon">🌅</div><div class="mini-name">Çatı Terası</div><p class="mini-desc">İstanbul'un panoramik manzarasını çatı terasımızdan seyredin.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA STRIP -->
+<div class="reserve-strip">
+  <div class="reserve-inner">
+    <div class="reserve-text">
+      <div class="strip-title">Tüm Aktiviteleri<br>Keşfetmeye Hazır mısınız?</div>
+      <div class="strip-sub">Rezervasyonunuzu yapın, kalanı bize bırakın.</div>
+    </div>
+    <button class="reserve-btn" onclick="window.location='Odalarimiz.html'">Rezervasyon Yap</button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-bottom">
+    <a href="index.html" class="footer-back">
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M15 5H1M6 1L2 5l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Anasayfaya Dön
+    </a>
+    <span>© 2026 Hotel Master · Tüm hakları saklıdır</span>
+    <span><a href="#">Gizlilik Politikası</a></span>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

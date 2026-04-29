@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hakkımızda — Hotel Master</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .page-hero { height: 65vh; min-height: 500px; }
+  .page-hero-bg { background-image: url('https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1800&q=80'); transform: scale(1.05); }
+  .page-hero-overlay { background: linear-gradient(to bottom, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.8) 70%, var(--black) 100%); }
+
+  /* STORY */
+  .story-section { padding: 7rem 0; background: var(--black); }
+  .story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8rem; align-items: center; }
+  .story-img-wrap { position: relative; }
+  .story-img-main { width: 100%; height: 560px; object-fit: cover; display: block; }
+  .story-img-accent { position: absolute; bottom: -2.5rem; right: -2.5rem; width: 220px; height: 220px; object-fit: cover; border: 6px solid var(--black); }
+  .story-badge { position: absolute; top: 2rem; left: -2rem; width: 110px; height: 110px; border-radius: 50%; background: var(--gold); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .story-badge-num { font-family: var(--font-display); font-size: 2rem; font-weight: 400; color: var(--black); line-height: 1; }
+  .story-badge-text { font-size: 0.5rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(10,10,10,0.7); font-weight: 600; }
+  .story-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.95; margin: 1.5rem 0; }
+  .story-divider { width: 60px; height: 1px; background: var(--gold); margin: 2rem 0; }
+  .story-signature { font-family: var(--font-display); font-size: 1.8rem; font-style: italic; color: var(--gold-light); line-height: 1; }
+  .story-signature-title { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.4rem; }
+
+  /* VALUES */
+  .values-section { padding: 7rem 0; background: var(--charcoal); }
+  .values-header { text-align: center; max-width: 600px; margin: 0 auto 4.5rem; }
+  .values-header .section-label { justify-content: center; }
+  .values-header .section-label::before { display: none; }
+  .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px; background: rgba(201,168,76,0.08); }
+  .value-card { background: var(--dark); padding: 2.5rem 2rem; position: relative; overflow: hidden; transition: background 0.4s; }
+  .value-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--gold); transform: scaleX(0); transition: transform 0.4s; }
+  .value-card:hover { background: var(--mid); }
+  .value-card:hover::before { transform: scaleX(1); }
+  .value-icon { width: 52px; height: 52px; border: 1px solid rgba(201,168,76,0.3); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; transition: border-color 0.4s, background 0.4s; }
+  .value-card:hover .value-icon { border-color: var(--gold); background: var(--gold-dim); }
+  .value-name { font-family: var(--font-display); font-size: 1.4rem; font-weight: 400; color: var(--white); margin-bottom: 0.8rem; }
+  .value-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.85; }
+
+  /* TEAM */
+  .team-section { padding: 7rem 0; background: var(--black); }
+  .team-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; }
+  .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5px; background: rgba(201,168,76,0.08); }
+  .team-card { background: var(--dark); overflow: hidden; position: relative; cursor: pointer; }
+  .team-img { width: 100%; height: 320px; object-fit: cover; filter: grayscale(30%); transition: filter 0.5s, transform 0.5s; }
+  .team-card:hover .team-img { filter: grayscale(0%); transform: scale(1.04); }
+  .team-body { padding: 1.5rem; }
+  .team-name { font-family: var(--font-display); font-size: 1.3rem; font-weight: 400; color: var(--white); margin-bottom: 0.2rem; }
+  .team-role { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+
+  /* TIMELINE */
+  .timeline-section { padding: 7rem 0; background: var(--charcoal); }
+  .timeline-header { max-width: 500px; margin-bottom: 5rem; }
+  .timeline { position: relative; }
+  .timeline::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(201,168,76,0.2); }
+  .timeline-item { display: grid; grid-template-columns: 1fr 60px 1fr; gap: 2rem; align-items: center; margin-bottom: 4rem; }
+  .timeline-item:last-child { margin-bottom: 0; }
+  .timeline-item:nth-child(odd) .timeline-content:first-child { text-align: right; }
+  .timeline-item:nth-child(even) .timeline-left { order: 3; text-align: left; }
+  .timeline-item:nth-child(even) .timeline-right { order: 1; text-align: right; }
+  .timeline-dot { display: flex; align-items: center; justify-content: center; }
+  .timeline-dot-inner { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--gold); background: var(--charcoal); display: flex; align-items: center; justify-content: center; font-size: 0.55rem; letter-spacing: 0.1em; color: var(--gold); font-weight: 600; position: relative; z-index: 1; }
+  .timeline-year { font-family: var(--font-display); font-size: 2.5rem; font-weight: 300; color: var(--gold); line-height: 1; margin-bottom: 0.3rem; opacity: 0.4; }
+  .timeline-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 400; color: var(--white); margin-bottom: 0.5rem; }
+  .timeline-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.85; }
+
+  /* AWARDS */
+  .awards-section { padding: 5rem 0; background: var(--gold); }
+  .awards-inner { max-width: 1280px; margin: 0 auto; padding: 0 4rem; }
+  .awards-title { font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--black); opacity: 0.6; text-align: center; margin-bottom: 2.5rem; font-weight: 400; }
+  .awards-grid { display: flex; justify-content: center; gap: 4rem; align-items: center; flex-wrap: wrap; }
+  .award-item { text-align: center; }
+  .award-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .award-name { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(10,10,10,0.75); font-weight: 600; }
+  .award-year { font-family: var(--font-display); font-size: 1.4rem; color: var(--black); font-weight: 300; }
+
+  @media (max-width: 1023px) {
+    .story-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .story-img-accent { display: none; }
+    .story-badge { left: 1rem; }
+    .values-grid { grid-template-columns: repeat(2, 1fr); }
+    .team-grid { grid-template-columns: repeat(2, 1fr); }
+    .awards-inner { padding: 0 2rem; }
+    .awards-grid { gap: 2rem; }
+  }
+  @media (max-width: 767px) {
+    .story-img-main { height: 360px; }
+    .values-grid { grid-template-columns: 1fr; }
+    .team-img { height: 220px; }
+    .awards-inner { padding: 0 1.25rem; }
+    .awards-grid { gap: 1.5rem; }
+    .timeline::before { left: 20px; transform: none; }
+    .timeline-item { grid-template-columns: 44px 1fr; gap: 0 1rem; margin-bottom: 2.5rem; }
+    .timeline-item:nth-child(even) .timeline-left,
+    .timeline-item:nth-child(even) .timeline-right { order: 0; }
+    .timeline-dot { grid-column: 1 !important; grid-row: 1 !important; }
+    .timeline-item:nth-child(odd) .timeline-left { grid-column: 2 !important; grid-row: 1 !important; text-align: left !important; }
+    .timeline-item:nth-child(odd) .timeline-right { display: none !important; }
+    .timeline-item:nth-child(even) .timeline-left { display: none !important; }
+    .timeline-item:nth-child(even) .timeline-right { grid-column: 2 !important; grid-row: 1 !important; }
+    .timeline-year { font-size: 1.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav--solid">
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-name">HOTEL MASTER</span>
+    <span class="nav-logo-sub">Luxury &amp; Excellence</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Anasayfa</a></li>
+    <li><a href="Hakkimizda.html" class="active">Hakkımızda</a></li>
+    <li><a href="Odalarimiz.html">Odalarımız</a></li>
+    <li><a href="Galeri.html">Galeri</a></li>
+    <li><a href="Aktiviteler.html">Aktiviteler</a></li>
+    <li><a href="Iletisim.html">İletişim</a></li>
+  </ul>
+  <a href="Iletisim.html" class="nav-reserve">Rezervasyon Yap</a>
+  <button class="nav-toggle" aria-label="Menüyü aç"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <div class="breadcrumb">
+      <a href="index.html">Anasayfa</a>
+      <span>/</span>
+      <span style="color:var(--white);">Hakkımızda</span>
+    </div>
+    <h1 class="page-hero-title">28 Yıllık<br><em>Zarafet ve Tutku</em></h1>
+  </div>
+</div>
+
+<!-- STORY -->
+<section class="story-section">
+  <div class="section-inner">
+    <div class="story-grid">
+      <div class="story-img-wrap reveal">
+        <img class="story-img-main" src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80" alt="Otel İç Mekan">
+        <img class="story-img-accent" src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=80" alt="Restoran">
+        <div class="story-badge">
+          <div class="story-badge-num">5★</div>
+          <div class="story-badge-text">Lüks Otel</div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="section-label">Hikayemiz</div>
+        <h2 class="section-title">Konaklamanın<br>Ötesine Geçiyoruz</h2>
+        <div class="story-divider"></div>
+        <p class="story-desc">1996 yılında İstanbul'un kalbinde kapılarını açan Hotel Master, o günden bu yana misafirlerine yalnızca bir konaklama değil; unutulmaz bir deneyim sunmayı ilke edinmiştir. Osmanlı zarafetini modern lüksle buluşturan mimarimiz ve eğitimli kadromuzla her yıl binlerce misafire ev sahipliği yapıyoruz.</p>
+        <p class="story-desc">Türkiye'nin en prestijli otellerinden biri olma yolunda aldığımız her adımda, misafir memnuniyeti en büyük motivasyonumuz olmuştur. Uluslararası standartlar ve yerel sıcaklığı harmanlayan anlayışımızla, dünyanın dört bir yanından konuklarımıza kapımızı açıyoruz.</p>
+        <div class="story-divider"></div>
+        <div class="story-signature">Ahmet Yılmaz</div>
+        <div class="story-signature-title">Genel Müdür, Hotel Master</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section class="values-section">
+  <div class="section-inner">
+    <div class="values-header reveal">
+      <div class="section-label">Değerlerimiz</div>
+      <h2 class="section-title">Bizi Biz Yapan<br>Temel İlkeler</h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-card reveal reveal-delay-1">
+        <div class="value-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="value-name">Güven &amp; Güvenlik</div>
+        <p class="value-desc">Misafirlerimizin huzur ve güvenliği her şeyin önünde gelir. 7/24 güvenlik ekibimiz ve modern altyapımızla güvende hissettiriyoruz.</p>
+      </div>
+      <div class="value-card reveal reveal-delay-2">
+        <div class="value-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+        <div class="value-name">Misafir Odaklılık</div>
+        <p class="value-desc">Her misafirimizin beklentisini aşmak için çalışıyoruz. Kişiselleştirilmiş hizmetlerimizle kendilerine özel hissettiriyoruz.</p>
+      </div>
+      <div class="value-card reveal reveal-delay-3">
+        <div class="value-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+        <div class="value-name">Mükemmellik</div>
+        <p class="value-desc">Standartlarımızı sürekli yükseltiyoruz. Uluslararası akreditasyonlar ve ödüllerle taçlanan hizmet anlayışımız bizi farklı kılıyor.</p>
+      </div>
+      <div class="value-card reveal reveal-delay-1">
+        <div class="value-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        <div class="value-name">Yerel Kültür</div>
+        <p class="value-desc">Türk misafirperverliğini dünya standartlarıyla buluşturarak özgün ve sıcak bir atmosfer yaratıyoruz.</p>
+      </div>
+      <div class="value-card reveal reveal-delay-2">
+        <div class="value-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
+        <div class="value-name">Sürdürülebilirlik</div>
+        <p class="value-desc">Çevreye duyarlı uygulamalarımız ve enerji verimliliği projelerimizle gelecek nesillere güzel bir dünya bırakıyoruz.</p>
+      </div>
+      <div class="value-card reveal reveal-delay-3">
+        <div class="value-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+        <div class="value-name">Ekip Ruhu</div>
+        <p class="value-desc">250'yi aşkın uzman kadromuzla, her departmanımız birbirini tamamlayan bir senfoni gibi çalışır.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="team-section">
+  <div class="section-inner">
+    <div class="team-header reveal">
+      <div>
+        <div class="section-label">Ekibimiz</div>
+        <h2 class="section-title">Deneyimli<br>Profesyoneller</h2>
+      </div>
+    </div>
+    <div class="team-grid">
+      <div class="team-card reveal reveal-delay-1">
+        <img class="team-img" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80" alt="Ahmet Yılmaz">
+        <div class="team-body"><div class="team-name">Ahmet Yılmaz</div><div class="team-role">Genel Müdür</div></div>
+      </div>
+      <div class="team-card reveal reveal-delay-2">
+        <img class="team-img" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80" alt="Selin Kaya">
+        <div class="team-body"><div class="team-name">Selin Kaya</div><div class="team-role">Misafir İlişkileri Direktörü</div></div>
+      </div>
+      <div class="team-card reveal reveal-delay-3">
+        <img class="team-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" alt="Kemal Arslan">
+        <div class="team-body"><div class="team-name">Kemal Arslan</div><div class="team-role">Şef &amp; Mutfak Direktörü</div></div>
+      </div>
+      <div class="team-card reveal reveal-delay-4">
+        <img class="team-img" src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80" alt="Ayla Demir">
+        <div class="team-body"><div class="team-name">Ayla Demir</div><div class="team-role">Spa &amp; Wellness Direktörü</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline-section">
+  <div class="section-inner">
+    <div class="timeline-header reveal">
+      <div class="section-label">Tarihçemiz</div>
+      <h2 class="section-title">28 Yıllık<br>Yolculuk</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-content timeline-left" style="text-align:right;">
+          <div class="timeline-year">1996</div>
+          <div class="timeline-title">Kuruluş</div>
+          <p class="timeline-desc">Hotel Master, İstanbul Bakırköy'de 40 odalı butik otel olarak kapılarını açtı. Misafirperverlikte yeni bir çağ başladı.</p>
+        </div>
+        <div class="timeline-dot"><div class="timeline-dot-inner">★</div></div>
+        <div class="timeline-content timeline-right"></div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-content timeline-left"></div>
+        <div class="timeline-dot"><div class="timeline-dot-inner">★</div></div>
+        <div class="timeline-content timeline-right">
+          <div class="timeline-year">2003</div>
+          <div class="timeline-title">Genişleme</div>
+          <p class="timeline-desc">Otel kapasitesi 120 odaya çıkarıldı. Spa ve wellness merkezi, çok amaçlı toplantı salonları eklendi.</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-content timeline-left" style="text-align:right;">
+          <div class="timeline-year">2010</div>
+          <div class="timeline-title">5 Yıldız Sertifikası</div>
+          <p class="timeline-desc">Türkiye Turizm Bakanlığı tarafından 5 yıldızlı otel statüsüne yükseltildik. Uluslararası standartlara ulaşmanın gururu.</p>
+        </div>
+        <div class="timeline-dot"><div class="timeline-dot-inner">★</div></div>
+        <div class="timeline-content timeline-right"></div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-content timeline-left"></div>
+        <div class="timeline-dot"><div class="timeline-dot-inner">★</div></div>
+        <div class="timeline-content timeline-right">
+          <div class="timeline-year">2019</div>
+          <div class="timeline-title">Dijital Dönüşüm</div>
+          <p class="timeline-desc">Akıllı oda teknolojileri, dijital konsiyer ve online rezervasyon sistemleriyle geleceğe adım attık.</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-content timeline-left" style="text-align:right;">
+          <div class="timeline-year">2024</div>
+          <div class="timeline-title">Yeniden Doğuş</div>
+          <p class="timeline-desc">Tam renovasyonla yenilenen iç mekanlarımız ve genişletilmiş restoranımızla lüks deneyimi yeniden tanımladık.</p>
+        </div>
+        <div class="timeline-dot"><div class="timeline-dot-inner">★</div></div>
+        <div class="timeline-content timeline-right"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AWARDS -->
+<div class="awards-section">
+  <div class="awards-inner">
+    <div class="awards-title">Ödüller &amp; Sertifikalar</div>
+    <div class="awards-grid">
+      <div class="award-item"><div class="award-icon">🏆</div><div class="award-year">2023</div><div class="award-name">En İyi Butik Otel<br>Türkiye</div></div>
+      <div class="award-item"><div class="award-icon">⭐</div><div class="award-year">2022</div><div class="award-name">Tripadvisor<br>Travellers' Choice</div></div>
+      <div class="award-item"><div class="award-icon">🌿</div><div class="award-year">2021</div><div class="award-name">Yeşil Sertifika<br>Sürdürülebilirlik</div></div>
+      <div class="award-item"><div class="award-icon">🍽️</div><div class="award-year">2020</div><div class="award-name">En İyi Restoran<br>İstanbul</div></div>
+      <div class="award-item"><div class="award-icon">♨️</div><div class="award-year">2019</div><div class="award-name">Lüks Spa<br>Ödülü</div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-bottom">
+    <a href="index.html" class="footer-back">
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M15 5H1M6 1L2 5l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Anasayfaya Dön
+    </a>
+    <span>© 2026 Hotel Master · Tüm hakları saklıdır</span>
+    <span><a href="#">Gizlilik Politikası</a></span>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

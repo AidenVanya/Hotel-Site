@@ -1,0 +1,456 @@
+const { useState } = React;
+
+const ROOMS_LIST = [
+  { id:'classic',       name:'Classic Oda',     price:150,  cap:'2 Kişi' },
+  { id:'deluxe',        name:'Deluxe Oda',      price:200,  cap:'2 Kişi' },
+  { id:'executive',     name:'Executive Oda',   price:300,  cap:'2 Kişi' },
+  { id:'family',        name:'Aile Odası',      price:350,  cap:'4 Kişi' },
+  { id:'honeymoon',     name:'Balayı Suite',    price:450,  cap:'2 Kişi' },
+  { id:'presidential',  name:'Presidential',    price:1200, cap:'4 Kişi' },
+];
+
+const EXTRAS = [
+  'Havalimanı Transferi', 'Araç Kiralama', 'Özel Şoför',
+  'Çiçek Dekorasyonu', 'Şampanya İkramı', 'Erken Check-in',
+  'Geç Check-out', 'Çocuk Karyolası', 'Ekstra Yatak',
+  'Spa Paketi', 'Romantik Akşam Yemeği', 'Doğum Günü Sürprizi',
+];
+
+function getToday() { return new Date().toISOString().split('T')[0]; }
+function getTomorrow() { const d = new Date(); d.setDate(d.getDate()+1); return d.toISOString().split('T')[0]; }
+function calcNights(ci, co) { return Math.max(1, Math.round((new Date(co) - new Date(ci)) / 86400000)); }
+function genRef() { return 'HM-' + Date.now().toString(36).toUpperCase().slice(-6); }
+
+function App() {
+  const [step, setStep] = useState(1);
+  const [success, setSuccess] = useState(false);
+  const [refCode] = useState(genRef());
+
+  const [f, setF] = useState({
+    checkin: getToday(), checkout: getTomorrow(),
+    adults: '2', children: '0', roomType: '',
+    firstName: '', lastName: '', phone: '', email: '',
+    nationality: 'TR', idType: 'TC Kimlik', idNo: '',
+    extras: [], floor: '', bedType: '', smokingPref: 'hayir',
+    specialRequest: '', arrivalTime: '',
+    payType: 'kapida',
+    cardName: '', cardNo: '', cardExp: '', cardCvv: '',
+    kvkk: false,
+  });
+  const [errors, setErrors] = useState({});
+
+  const set = (k, v) => setF(p => ({...p, [k]: v}));
+  const toggleExtra = (ex) => set('extras', f.extras.includes(ex) ? f.extras.filter(e=>e!==ex) : [...f.extras, ex]);
+
+  const nights = calcNights(f.checkin, f.checkout);
+  const room = ROOMS_LIST.find(r => r.id === f.roomType);
+  const total = room ? room.price * nights : 0;
+
+  function validate(s) {
+    const e = {};
+    if (s === 1) {
+      if (!f.roomType) e.roomType = 'Lütfen bir oda seçin';
+      if (!f.checkin) e.checkin = 'Giriş tarihi gerekli';
+      if (!f.checkout) e.checkout = 'Çıkış tarihi gerekli';
+    }
+    if (s === 2) {
+      if (!f.firstName.trim()) e.firstName = 'Ad gerekli';
+      if (!f.lastName.trim()) e.lastName = 'Soyad gerekli';
+      if (!f.phone.trim()) e.phone = 'Telefon gerekli';
+      if (!f.email.trim() || !f.email.includes('@')) e.email = 'Geçerli e-posta girin';
+      if (!f.idNo.trim()) e.idNo = 'Kimlik no gerekli';
+    }
+    if (s === 4) {
+      if (!f.kvkk) e.kvkk = 'Lütfen KVKK metnini onaylayın';
+      if (f.payType === 'kart') {
+        if (!f.cardName.trim()) e.cardName = 'Kart üzerindeki isim gerekli';
+        if (!f.cardNo.trim() || f.cardNo.replace(/\s/g,'').length < 16) e.cardNo = 'Geçerli kart numarası girin';
+        if (!f.cardExp.trim()) e.cardExp = 'Son kullanma tarihi gerekli';
+        if (!f.cardCvv.trim() || f.cardCvv.length < 3) e.cardCvv = 'CVV gerekli';
+      }
+    }
+    return e;
+  }
+
+  function next() {
+    const e = validate(step);
+    if (Object.keys(e).length) { setErrors(e); return; }
+    setErrors({});
+    if (step === 4) { setSuccess(true); return; }
+    setStep(s => s + 1);
+  }
+
+  function back() { setErrors({}); setStep(s => s - 1); }
+
+  const steps = ['Tarih & Oda','Kişisel Bilgiler','Tercihler','Onay & Ödeme'];
+
+  if (success) return (
+    <div className="main-section" style={{display:'block', padding:'5rem 4rem 7rem'}}>
+      <div className="success-state">
+        <div className="success-circle">✓</div>
+        <h2 className="success-title">Rezervasyonunuz<br/><em>Alındı!</em></h2>
+        <p className="success-desc">Sayın {f.firstName} {f.lastName}, rezervasyon talebiniz başarıyla alınmıştır. En kısa sürede <strong style={{color:'var(--gold)'}}>{f.email}</strong> adresinize onay e-postası gönderilecektir.</p>
+        <div className="success-ref">
+          <div className="success-ref-label">Rezervasyon Referans Kodu</div>
+          <div className="success-ref-num">{refCode}</div>
+        </div>
+        <div style={{marginTop:'2.5rem', display:'flex', gap:'1rem', justifyContent:'center'}}>
+          <button className="btn-next" onClick={() => window.location='index.html'}>Anasayfaya Dön</button>
+          <button className="btn-back" onClick={() => { setSuccess(false); setStep(1); setF(p => ({...p, firstName:'', lastName:'', phone:'', email:'', idNo:'', cardName:'', cardNo:'', cardExp:'', cardCvv:'', kvkk:false })); }}>Yeni Rezervasyon</button>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="main-section">
+      <div className="form-side">
+        <div className="section-label">Rezervasyon Formu</div>
+        <h2 className="section-title">Konaklamanızı<br/>Planlayalım</h2>
+        <p className="section-desc">Aşağıdaki formu doldurarak rezervasyon talebinizi oluşturun. Ekibimiz 2 saat içinde sizinle iletişime geçecektir.</p>
+
+        <div className="step-tabs">
+          {steps.map((s, i) => (
+            <div key={i} className={`step-tab${step===i+1?' active':''}${step>i+1?' done':''}`} onClick={() => step > i+1 && setStep(i+1)}>
+              <div className="step-tab-num">{step > i+1 ? '' : i+1}</div>
+              <div className="step-tab-label">{s}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* STEP 1 */}
+        <div className={`form-step${step===1?' active':''}`}>
+          <div className="field-group">
+            <div className="field">
+              <label className="field-label">Giriş Tarihi <span>*</span></label>
+              <input type="date" className={`field-input${errors.checkin?' error':''}`} value={f.checkin} min={getToday()}
+                onChange={e => { set('checkin', e.target.value); if(e.target.value >= f.checkout){ const d=new Date(e.target.value); d.setDate(d.getDate()+1); set('checkout',d.toISOString().split('T')[0]); } }} />
+              {errors.checkin && <div className="field-error">{errors.checkin}</div>}
+            </div>
+            <div className="field">
+              <label className="field-label">Çıkış Tarihi <span>*</span></label>
+              <input type="date" className={`field-input${errors.checkout?' error':''}`} value={f.checkout} min={f.checkin}
+                onChange={e => set('checkout', e.target.value)} />
+              {errors.checkout && <div className="field-error">{errors.checkout}</div>}
+            </div>
+          </div>
+          <div className="field-group">
+            <div className="field">
+              <label className="field-label">Yetişkin Sayısı</label>
+              <select className="field-select" value={f.adults} onChange={e => set('adults', e.target.value)}>
+                {[1,2,3,4].map(n => <option key={n} value={n}>{n} Yetişkin</option>)}
+              </select>
+            </div>
+            <div className="field">
+              <label className="field-label">Çocuk Sayısı</label>
+              <select className="field-select" value={f.children} onChange={e => set('children', e.target.value)}>
+                {[0,1,2,3].map(n => <option key={n} value={n}>{n === 0 ? 'Çocuk Yok' : n + ' Çocuk'}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div className="check-group-label">Oda Tipi <span style={{color:'var(--error)'}}>*</span></div>
+          {errors.roomType && <div className="field-error" style={{marginBottom:'0.6rem'}}>{errors.roomType}</div>}
+          <div className="room-type-grid">
+            {ROOMS_LIST.map(r => (
+              <div key={r.id} className={`room-type-card${f.roomType===r.id?' selected':''}`} onClick={() => set('roomType', r.id)}>
+                <div className="rtc-name">{r.name}</div>
+                <div className="rtc-price">₺{r.price}/gece</div>
+                <div className="rtc-cap">{r.cap}</div>
+              </div>
+            ))}
+          </div>
+
+          {f.roomType && nights > 0 && (
+            <div style={{background:'var(--gold-dim)',border:'1px solid rgba(201,168,76,0.2)',padding:'1rem 1.2rem',fontSize:'0.78rem',color:'var(--text-muted)',marginBottom:'1rem',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <span>{nights} gece × ₺{room.price}</span>
+              <span style={{color:'var(--gold)',fontFamily:'var(--font-display)',fontSize:'1.3rem'}}>₺{total.toLocaleString('tr-TR')}</span>
+            </div>
+          )}
+        </div>
+
+        {/* STEP 2 */}
+        <div className={`form-step${step===2?' active':''}`}>
+          <div className="field-group">
+            <div className="field">
+              <label className="field-label">Ad <span>*</span></label>
+              <input className={`field-input${errors.firstName?' error':''}`} value={f.firstName} onChange={e=>set('firstName',e.target.value)} placeholder="Ahmet" />
+              {errors.firstName && <div className="field-error">{errors.firstName}</div>}
+            </div>
+            <div className="field">
+              <label className="field-label">Soyad <span>*</span></label>
+              <input className={`field-input${errors.lastName?' error':''}`} value={f.lastName} onChange={e=>set('lastName',e.target.value)} placeholder="Yılmaz" />
+              {errors.lastName && <div className="field-error">{errors.lastName}</div>}
+            </div>
+          </div>
+          <div className="field-group">
+            <div className="field">
+              <label className="field-label">Telefon <span>*</span></label>
+              <input className={`field-input${errors.phone?' error':''}`} value={f.phone} onChange={e=>set('phone',e.target.value)} placeholder="+90 5XX XXX XX XX" />
+              {errors.phone && <div className="field-error">{errors.phone}</div>}
+            </div>
+            <div className="field">
+              <label className="field-label">E-Posta <span>*</span></label>
+              <input type="email" className={`field-input${errors.email?' error':''}`} value={f.email} onChange={e=>set('email',e.target.value)} placeholder="ornek@mail.com" />
+              {errors.email && <div className="field-error">{errors.email}</div>}
+            </div>
+          </div>
+          <div className="field-group">
+            <div className="field">
+              <label className="field-label">Uyruk</label>
+              <select className="field-select" value={f.nationality} onChange={e=>set('nationality',e.target.value)}>
+                <option value="TR">Türkiye</option>
+                <option value="DE">Almanya</option>
+                <option value="GB">İngiltere</option>
+                <option value="US">ABD</option>
+                <option value="FR">Fransa</option>
+                <option value="other">Diğer</option>
+              </select>
+            </div>
+            <div className="field">
+              <label className="field-label">Kimlik Türü</label>
+              <select className="field-select" value={f.idType} onChange={e=>set('idType',e.target.value)}>
+                <option>TC Kimlik</option>
+                <option>Pasaport</option>
+                <option>Sürücü Belgesi</option>
+              </select>
+            </div>
+          </div>
+          <div className="field-group single">
+            <div className="field">
+              <label className="field-label">{f.idType} No <span>*</span></label>
+              <input className={`field-input${errors.idNo?' error':''}`} value={f.idNo} onChange={e=>set('idNo',e.target.value)} placeholder="Kimlik / Pasaport numarası" />
+              {errors.idNo && <div className="field-error">{errors.idNo}</div>}
+            </div>
+          </div>
+        </div>
+
+        {/* STEP 3 */}
+        <div className={`form-step${step===3?' active':''}`}>
+          <div className="check-group-label">Ek Hizmetler &amp; Talepler</div>
+          <div className="check-group">
+            {EXTRAS.map(ex => (
+              <div key={ex} className={`check-item${f.extras.includes(ex)?' checked':''}`} onClick={() => toggleExtra(ex)}>
+                <div className="check-box">
+                  {f.extras.includes(ex) && <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#0A0A0A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                </div>
+                <span className="check-label">{ex}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="field-group">
+            <div className="field">
+              <label className="field-label">Kat Tercihi</label>
+              <select className="field-select" value={f.floor} onChange={e=>set('floor',e.target.value)}>
+                <option value="">Fark etmez</option>
+                <option>Düşük Kat (2-3)</option>
+                <option>Orta Kat (4-6)</option>
+                <option>Yüksek Kat (7-8)</option>
+                <option>Teras Kat (9)</option>
+              </select>
+            </div>
+            <div className="field">
+              <label className="field-label">Yatak Tercihi</label>
+              <select className="field-select" value={f.bedType} onChange={e=>set('bedType',e.target.value)}>
+                <option value="">Fark etmez</option>
+                <option>Çift Kişilik (King)</option>
+                <option>İki Ayrı Yatak (Twin)</option>
+              </select>
+            </div>
+          </div>
+          <div className="field-group">
+            <div className="field">
+              <label className="field-label">Sigara Tercihi</label>
+              <select className="field-select" value={f.smokingPref} onChange={e=>set('smokingPref',e.target.value)}>
+                <option value="hayir">Sigara İçilmez</option>
+                <option value="evet">Sigara İçilir</option>
+              </select>
+            </div>
+            <div className="field">
+              <label className="field-label">Tahmini Varış Saati</label>
+              <select className="field-select" value={f.arrivalTime} onChange={e=>set('arrivalTime',e.target.value)}>
+                <option value="">Belirtmek İstemiyorum</option>
+                {['08:00–10:00','10:00–12:00','12:00–14:00','14:00–16:00','16:00–18:00','18:00–20:00','20:00–22:00','22:00+'].map(t=><option key={t}>{t}</option>)}
+              </select>
+            </div>
+          </div>
+          <div className="field-group single">
+            <div className="field">
+              <label className="field-label">Özel İstek veya Not</label>
+              <textarea className="field-textarea" value={f.specialRequest} onChange={e=>set('specialRequest',e.target.value)} placeholder="Alerjiniz, özel gereksinimleriniz veya diğer talepleriniz..." />
+            </div>
+          </div>
+        </div>
+
+        {/* STEP 4 */}
+        <div className={`form-step${step===4?' active':''}`}>
+          <div className="summary-box">
+            <div className="summary-title">Rezervasyon Özeti</div>
+            {room && <>
+              <div className="summary-row"><span>Oda Tipi</span><strong>{room.name}</strong></div>
+              <div className="summary-row"><span>Giriş</span><strong>{f.checkin}</strong></div>
+              <div className="summary-row"><span>Çıkış</span><strong>{f.checkout}</strong></div>
+              <div className="summary-row"><span>Süre</span><strong>{nights} Gece</strong></div>
+              <div className="summary-row"><span>Misafir</span><strong>{f.adults} Yetişkin{f.children>0?' + '+f.children+' Çocuk':''}</strong></div>
+              <div className="summary-row"><span>Misafir Adı</span><strong>{f.firstName} {f.lastName}</strong></div>
+              {f.extras.length > 0 && <div className="summary-row"><span>Ek Hizmetler</span><strong>{f.extras.slice(0,2).join(', ')}{f.extras.length>2?' +'+(f.extras.length-2):''}</strong></div>}
+              <div className="summary-row total"><span>Toplam Tutar</span><strong>₺{total.toLocaleString('tr-TR')}</strong></div>
+            </>}
+          </div>
+
+          <div className="check-group-label">Ödeme Yöntemi</div>
+          <div style={{display:'flex',gap:'0.8rem',marginBottom:'1.5rem'}}>
+            {[['kapida','Kapıda Ödeme'],['kart','Kredi Kartı'],['havale','Banka Havalesi']].map(([val,label])=>(
+              <div key={val} style={{flex:1,border:`1px solid ${f.payType===val?'var(--gold)':'rgba(201,168,76,0.18)'}`,background:f.payType===val?'var(--gold-dim)':'var(--dark)',padding:'0.9rem',cursor:'pointer',textAlign:'center',fontSize:'0.72rem',color:f.payType===val?'var(--gold)':'var(--text-muted)',transition:'all 0.25s',letterSpacing:'0.08em'}} onClick={()=>set('payType',val)}>{label}</div>
+            ))}
+          </div>
+
+          {f.payType === 'kart' && (
+            <div>
+              <div className="field-group single" style={{marginBottom:'1.2rem'}}>
+                <div className="field">
+                  <label className="field-label">Kart Üzerindeki İsim <span>*</span></label>
+                  <input className={`field-input${errors.cardName?' error':''}`} value={f.cardName} onChange={e=>set('cardName',e.target.value)} placeholder="AHMET YILMAZ" style={{textTransform:'uppercase'}} />
+                  {errors.cardName && <div className="field-error">{errors.cardName}</div>}
+                </div>
+              </div>
+              <div className="field-group single" style={{marginBottom:'1.2rem'}}>
+                <div className="field">
+                  <label className="field-label">Kart Numarası <span>*</span></label>
+                  <input className={`field-input${errors.cardNo?' error':''}`} value={f.cardNo} maxLength={19}
+                    onChange={e=>{ const v=e.target.value.replace(/\D/g,'').replace(/(.{4})/g,'$1 ').trim(); set('cardNo',v); }}
+                    placeholder="0000 0000 0000 0000" />
+                  {errors.cardNo && <div className="field-error">{errors.cardNo}</div>}
+                </div>
+              </div>
+              <div className="field-group triple">
+                <div className="field" style={{gridColumn:'span 2'}}>
+                  <label className="field-label">Son Kullanma Tarihi <span>*</span></label>
+                  <input className={`field-input${errors.cardExp?' error':''}`} value={f.cardExp} maxLength={5}
+                    onChange={e=>{ let v=e.target.value.replace(/\D/g,''); if(v.length>=2) v=v.slice(0,2)+'/'+v.slice(2); set('cardExp',v); }}
+                    placeholder="AA/YY" />
+                  {errors.cardExp && <div className="field-error">{errors.cardExp}</div>}
+                </div>
+                <div className="field">
+                  <label className="field-label">CVV <span>*</span></label>
+                  <input className={`field-input${errors.cardCvv?' error':''}`} type="password" value={f.cardCvv} maxLength={4} onChange={e=>set('cardCvv',e.target.value.replace(/\D/g,''))} placeholder="•••" />
+                  {errors.cardCvv && <div className="field-error">{errors.cardCvv}</div>}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {f.payType === 'havale' && (
+            <div style={{background:'var(--gold-dim)',border:'1px solid rgba(201,168,76,0.15)',padding:'1.2rem',fontSize:'0.78rem',color:'var(--text-muted)',lineHeight:'1.8',marginBottom:'1.2rem'}}>
+              <strong style={{color:'var(--gold)',display:'block',marginBottom:'0.5rem'}}>Banka Bilgileri</strong>
+              IBAN: TR12 0001 0012 3456 7890 1234 56<br/>
+              Alıcı: Hotel Master Turizm A.Ş.<br/>
+              Açıklama: Rezervasyon — {f.firstName} {f.lastName}
+            </div>
+          )}
+
+          <div style={{marginTop:'1rem'}}>
+            <div className={`check-item${f.kvkk?' checked':''}`} onClick={()=>set('kvkk',!f.kvkk)} style={{marginBottom:'0.4rem'}}>
+              <div className="check-box">
+                {f.kvkk && <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#0A0A0A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+              </div>
+              <span className="check-label" style={{fontSize:'0.72rem'}}>
+                <a href="#" style={{color:'var(--gold)'}}>KVKK Aydınlatma Metni</a>'ni okudum, kişisel verilerimin işlenmesini kabul ediyorum. <span style={{color:'var(--error)'}}>*</span>
+              </span>
+            </div>
+            {errors.kvkk && <div className="field-error">{errors.kvkk}</div>}
+          </div>
+
+          <p className="privacy-note">Rezervasyon talebiniz onaylanana kadar herhangi bir ücret tahsil edilmeyecektir. Onay e-postası 2 saat içinde gönderilir. Sorularınız için: <a href="tel:+905338333663">+90 533 833 36 63</a></p>
+        </div>
+
+        <div className="form-nav">
+          {step > 1 ? (
+            <button className="btn-back" onClick={back}>← Geri</button>
+          ) : <div></div>}
+          <span className="step-hint">Adım {step} / 4</span>
+          <button className="btn-next" onClick={next}>
+            {step === 4 ? 'Rezervasyon Talebini Gönder' : 'Devam Et →'}
+          </button>
+        </div>
+      </div>
+
+      {/* RIGHT PANEL */}
+      <div className="right-panel">
+        <div className="contact-card">
+          <div className="contact-card-title">İletişim Bilgileri</div>
+          <div className="contact-entry">
+            <div className="contact-entry-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.66A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+            </div>
+            <div>
+              <div className="contact-entry-label">Telefon</div>
+              <div className="contact-entry-value"><a href="tel:+905338333663">+90 533 833 36 63</a><br/><a href="tel:+902125550011">+90 212 555 00 11</a></div>
+            </div>
+          </div>
+          <div className="contact-entry">
+            <div className="contact-entry-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <div className="contact-entry-label">E-Posta</div>
+              <div className="contact-entry-value"><a href="mailto:rezervasyon@hotelmaster.com">rezervasyon@hotelmaster.com</a></div>
+            </div>
+          </div>
+          <div className="contact-entry">
+            <div className="contact-entry-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <div className="contact-entry-label">Adres</div>
+              <div className="contact-entry-value">Cumhuriyet Cad. No:392<br/>Bakırköy, İstanbul 34145</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="map-card">
+          <div className="map-placeholder">
+            <div className="map-overlay">
+              <div className="map-pin">📍 Hotel Master</div>
+            </div>
+          </div>
+          <div className="map-address">
+            <strong>Hotel Master</strong>
+            Cumhuriyet Cad. No:392, Bakırköy / İstanbul<br/>
+            Metro: Bakırköy M1A · 5 dk yürüyüş
+          </div>
+        </div>
+
+        <div className="hours-card">
+          <div className="hours-card-title">Çalışma Saatleri</div>
+          <div className="hours-row"><span className="hours-day">Resepsiyon</span><span className="hours-time gold">7/24 Açık</span></div>
+          <div className="hours-row"><span className="hours-day">Restoran Kahvaltı</span><span className="hours-time">07:00 – 10:30</span></div>
+          <div className="hours-row"><span className="hours-day">Restoran Öğle</span><span className="hours-time">12:00 – 15:00</span></div>
+          <div className="hours-row"><span className="hours-day">Restoran Akşam</span><span className="hours-time">18:00 – 23:00</span></div>
+          <div className="hours-row"><span className="hours-day">Spa &amp; Hamam</span><span className="hours-time">08:00 – 22:00</span></div>
+          <div className="hours-row"><span className="hours-day">Fitness</span><span className="hours-time">06:00 – 23:00</span></div>
+          <div className="hours-row"><span className="hours-day">Havuz</span><span className="hours-time">08:00 – 21:00</span></div>
+          <div className="hours-row"><span className="hours-day">Bar</span><span className="hours-time">18:00 – 02:00</span></div>
+        </div>
+
+        <div className="social-card">
+          <div className="social-text">Bizi takip edin</div>
+          <div className="social-links">
+            <a href="#" className="social-link">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="#" className="social-link">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="#" className="social-link">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.66a8.19 8.19 0 004.77 1.52V6.73a4.85 4.85 0 01-1-.04z"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('app')).render(<App />);
