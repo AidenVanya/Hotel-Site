@@ -1,35 +1,25 @@
 # 5 Yıldızlı Otel Web Sitesi
 
-Bu proje, lüks bir otel için tasarlanmış modern, hızlı ve duyarlı (responsive) bir web uygulamasıdır. 
-
-Başlangıçta düz HTML, CSS ve JavaScript (Vite/React) kullanılarak geliştirilen proje, daha iyi performans, SEO ve modüler bir yapı elde etmek amacıyla **Next.js** altyapısına geçirilmiştir. Sitenin eski statik versiyonu, referans olması açısından `old_site` klasörü altında saklanmaktadır.
+Bu proje, lüks bir otel için tasarlanmış modern ve duyarlı (responsive) bir web sitesidir. Tamamen standart web teknolojileri kullanılarak geliştirilmiş olup, herhangi bir derleme aracına ihtiyaç duymadan doğrudan tarayıcıda çalışabilir.
 
 ## Kullanılan Teknolojiler
 
-- **Next.js** - React tabanlı framework
-- **React 19** - UI kütüphanesi
-- **Zustand** - Global state yönetimi
+- **HTML5** - Sayfa yapılandırması
+- **CSS3** - Tasarım ve stil (responsive yapı dahil)
+- **JavaScript** - Etkileşimli öğeler (ör. galeri, form doğrulama vb.)
 
-## Kurulum ve Çalıştırma
+## Kurulum ve Kullanım
 
-Projeyi kendi bilgisayarınızda denemek isterseniz adımlar oldukça basit:
+Proje statik dosyalardan oluştuğu için kurulum yapmanıza gerek yoktur:
 
-1. Repoyu bilgisayarınıza indirdikten sonra, proje klasörüne girin ve bağımlılıkları yükleyin:
-   ```bash
-   npm install
-   ```
-
-2. Geliştirme sunucusunu başlatın:
-   ```bash
-   npm run dev
-   ```
-
-3. Tarayıcınızda [http://localhost:3000](http://localhost:3000) adresine giderek siteyi görebilirsiniz.
+1. Repoyu bilgisayarınıza indirin veya klonlayın.
+2. Klasör içindeki `index.html` dosyasına çift tıklayarak tarayıcınızda açın.
+3. Veya bir canlı sunucu (Live Server) eklentisi kullanarak yerel ortamda görüntüleyin.
 
 ## Klasör Yapısı
 
-- `src/` - Next.js sayfaları, React bileşenleri (components) ve uygulamanın ana kodları burada yer alır.
-- `public/` - Resimler ve fontlar gibi statik dosyalar.
-- `old_site/` - Projenin eski HTML/CSS tabanlı versiyonu.
+- `index.html`, `Aktiviteler.html`, `Galeri.html` vb. - Uygulamanın sayfaları.
+- `css/` - Projenin stil dosyaları.
+- `js/` - Dinamik işlemler için JavaScript dosyaları.
 
-*Projeyle ilgili geliştirmeler devam ediyor.*
+*Netlify, Vercel veya GitHub Pages üzerinden kolayca yayınlayabilirsiniz.*
