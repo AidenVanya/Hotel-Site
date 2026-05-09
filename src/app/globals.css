@@ -12,6 +12,7 @@
   --text-muted: rgba(250,248,244,0.55);
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'Open Sans', sans-serif;
+  --error: #e05353;
 }
 html { scroll-behavior: smooth; }
 body { background: var(--black); color: var(--white); font-family: var(--font-body); font-weight: 300; line-height: 1.7; overflow-x: hidden; }
@@ -19,6 +20,7 @@ body { background: var(--black); color: var(--white); font-family: var(--font-bo
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--black); }
 ::-webkit-scrollbar-thumb { background: var(--gold); }
+a { text-decoration: none; }
 
 /* ── NAVIGATION ── */
 nav {
@@ -28,9 +30,6 @@ nav {
   transition: border-color 0.5s;
   border-bottom: 1px solid transparent;
 }
-/* Frosted glass on ::before so nav itself never has backdrop-filter.
-   backdrop-filter on nav would trap position:fixed children (the mobile overlay)
-   inside the nav's bounding box instead of the full viewport. */
 nav::before {
   content: ''; position: absolute; inset: 0;
   background: transparent; backdrop-filter: blur(0px);
@@ -50,13 +49,15 @@ nav.scrolled::before, nav.nav--solid::before {
 .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 1px; background: var(--gold); transform: scaleX(0); transition: transform 0.3s; }
 .nav-links a:hover, .nav-links a.active { color: var(--gold); }
 .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
-.nav-reserve { border: 1px solid var(--gold); color: var(--gold); padding: 0.6rem 1.4rem; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; background: transparent; cursor: pointer; font-family: var(--font-body); font-weight: 500; transition: background 0.3s, color 0.3s; }
+.nav-reserve { border: 1px solid var(--gold); color: var(--gold); padding: 0.6rem 1.4rem; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; background: transparent; cursor: pointer; font-family: var(--font-body); font-weight: 500; transition: background 0.3s, color 0.3s; text-decoration: none; display: inline-block; }
 .nav-reserve:hover { background: var(--gold); color: var(--black); }
 
 /* ── BUTTONS ── */
-.btn-primary { background: var(--gold); color: var(--black); border: none; padding: 1rem 2.5rem; font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; cursor: pointer; transition: background 0.3s, transform 0.2s; }
+.btn-primary { background: var(--gold); color: var(--black); border: none; padding: 1rem 2.5rem; font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; cursor: pointer; transition: background 0.3s, transform 0.2s; position: relative; overflow: hidden; display: inline-block; text-decoration: none; }
+.btn-primary::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(255,255,255,0.25) 0%, transparent 70%); transform: scale(0); opacity: 0; transition: transform 0.5s cubic-bezier(0.16,1,0.3,1), opacity 0.5s; pointer-events: none; border-radius: inherit; }
+.btn-primary:active::after { transform: scale(2.5); opacity: 1; transition: none; }
 .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
-.btn-ghost { background: transparent; color: var(--white); border: 1px solid rgba(250,248,244,0.4); padding: 1rem 2.5rem; font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; cursor: pointer; transition: border-color 0.3s, color 0.3s; }
+.btn-ghost { background: transparent; color: var(--white); border: 1px solid rgba(250,248,244,0.4); padding: 1rem 2.5rem; font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; cursor: pointer; transition: border-color 0.3s, color 0.3s; display: inline-block; text-decoration: none; }
 .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
 
 /* ── SECTION LAYOUT ── */
@@ -65,6 +66,7 @@ section { padding: 7rem 0; }
 .section-label { font-size: 0.6rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; }
 .section-label::before { content: ''; width: 30px; height: 1px; background: var(--gold); }
 .section-title { font-family: var(--font-display); font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 300; line-height: 1.15; color: var(--white); margin-bottom: 1.5rem; }
+.section-desc { font-size: 0.875rem; color: var(--text-muted); line-height: 1.9; }
 .section-divider { width: 60px; height: 1px; background: var(--gold); margin: 1.5rem 0 3rem; }
 
 /* ── PAGE HERO (shared structure) ── */
@@ -98,6 +100,18 @@ footer { background: var(--black); border-top: 1px solid rgba(201,168,76,0.15); 
 .footer-back { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--gold); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; border-bottom: 1px solid rgba(201,168,76,0.3); padding-bottom: 0.2rem; transition: gap 0.3s; }
 .footer-back:hover { gap: 1rem; }
 
+/* ── PAGE TRANSITION ── */
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+main, .page-hero, section:first-of-type {
+  animation: pageFadeIn 0.45s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+/* ── SCROLL PROGRESS ── */
+.scroll-progress { position: fixed; top: 0; left: 0; height: 2px; width: 0%; background: var(--gold); z-index: 200; transition: width 0.08s linear; pointer-events: none; }
+
 /* ── REVEAL ANIMATIONS ── */
 .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
 .reveal.visible { opacity: 1; transform: none; }
@@ -105,6 +119,19 @@ footer { background: var(--black); border-top: 1px solid rgba(201,168,76,0.15); 
 .reveal-delay-2 { transition-delay: 0.2s; }
 .reveal-delay-3 { transition-delay: 0.3s; }
 .reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+.reveal-delay-6 { transition-delay: 0.6s; }
+.reveal-delay-7 { transition-delay: 0.7s; }
+.reveal-delay-8 { transition-delay: 0.8s; }
+
+/* ── DIRECTIONAL REVEALS ── */
+.reveal-left { opacity: 0; transform: translateX(-55px); transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+.reveal-right { opacity: 0; transform: translateX(55px); transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+.reveal-left.visible, .reveal-right.visible { opacity: 1; transform: none; }
+
+/* ── STAT COUNTER SHIMMER ── */
+@keyframes statShimmer { 0% { opacity: 1; } 50% { opacity: 0.35; transform: scale(1.04); } 100% { opacity: 1; transform: none; } }
+.stat-num.shimmer { animation: statShimmer 0.7s ease; }
 
 /* ── HAMBURGER BUTTON ── */
 .nav-toggle {
