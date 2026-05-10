@@ -21,5 +21,3 @@ Proje statik dosyalardan oluştuğu için kurulum yapmanıza gerek yoktur:
 - `index.html`, `Aktiviteler.html`, `Galeri.html` vb. - Uygulamanın sayfaları.
 - `css/` - Projenin stil dosyaları.
 - `js/` - Dinamik işlemler için JavaScript dosyaları.
-
-*Netlify, Vercel veya GitHub Pages üzerinden kolayca yayınlayabilirsiniz.*
